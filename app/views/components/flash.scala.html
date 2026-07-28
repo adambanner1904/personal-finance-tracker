@@ -1,0 +1,9 @@
+@()(implicit flash: Flash)
+
+@flash.get("success").map { msg => 
+  <div class="alert alert-success">@msg</div>
+}
+
+@flash.get("error").map { msg => 
+  <div class="alert alert-error">@msg</div>
+}

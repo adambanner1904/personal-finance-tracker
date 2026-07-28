@@ -1,7 +1,7 @@
 # PFT-001 — Play Scala project skeleton and package structure
 
 **Epic:** EPIC-01 Foundations
-**Status:** backlog
+**Status:** done
 **Size:** S
 **Prerequisites:** None
 
@@ -15,19 +15,19 @@ Nothing else can start until there is a running app. Getting the package shape r
 
 ## Tasks
 
-- [ ] Create a Play Scala project (sbt, Scala 2.13 or 3.x, Play 2.9/3.x)
-- [ ] Add package structure: `controllers`, `services`, `persistence`, `models.domain`, `forms`, `views`, `conf/db/migration`
-- [ ] Add a placeholder `HomeController` and a `GET /` route that renders a page
-- [ ] Add `.gitignore`, initialise git, first commit
-- [ ] Write README with prerequisites, `sbt run`, and local DB setup steps
-- [ ] Add config placeholders in `application.conf` for DB URL, user, password, app secret (env-var overrides)
+- [x] Create a Play Scala project (sbt, Scala 2.13 or 3.x, Play 2.9/3.x)
+- [x] Add package structure: `controllers`, `services`, `persistence`, `models.domain`, `forms`, `views`, `conf/db/migration`
+- [x] Add a placeholder `HomeController` and a `GET /` route that renders a page
+- [x] Add `.gitignore`, initialise git, first commit
+- [x] Write README with prerequisites, `sbt run`, and local DB setup steps
+- [x] Add config placeholders in `application.conf` for DB URL, user, password, app secret (env-var overrides)
 
 ## Acceptance criteria
 
-- [ ] `sbt run` starts the app and `http://localhost:9000` returns a page
-- [ ] Package directories exist and are empty-but-intentional, not ad hoc
-- [ ] README lets a cold start work from a clean machine
-- [ ] No secrets committed; config reads from env vars with local defaults
+- [x] `sbt run` starts the app and `http://localhost:9000` returns a page
+- [x] Package directories exist and are empty-but-intentional, not ad hoc
+- [x] README lets a cold start work from a clean machine
+- [x] No secrets committed; config reads from env vars with local defaults
 
 ## Notes / decisions
 

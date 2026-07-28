@@ -1,7 +1,7 @@
 # PFT-002 — Base Twirl layout, navigation shell, flash messages and base styling
 
 **Epic:** EPIC-01 Foundations
-**Status:** backlog
+**Status:** done
 **Size:** S
 **Prerequisites:** PFT-001
 
@@ -15,18 +15,18 @@ Every later screen depends on this. Doing it once up front keeps the app looking
 
 ## Tasks
 
-- [ ] Create `views/layout/main.scala.html` taking title and content block
-- [ ] Add header/nav shell (Dashboard, Snapshots, Accounts, Institutions, Logout) with a hook to hide nav when logged out
-- [ ] Add `views/components/flash.scala.html` rendering `success` / `error` flash keys
-- [ ] Add `public/stylesheets/main.css` with styles for forms, labels, inputs, validation errors, tables, buttons, alerts, cards
+- [x] Create `views/layout/main.scala.html` taking title and content block
+- [x] Add header/nav shell (Dashboard, Snapshots, Accounts, Institutions, Logout) with a hook to hide nav when logged out
+- [x] Add `views/components/flash.scala.html` rendering `success` / `error` flash keys
+- [x] Add `public/stylesheets/main.css` with styles for forms, labels, inputs, validation errors, tables, buttons, alerts, cards
 - [ ] Add a simple empty-state partial for reuse on list pages
 
 ## Acceptance criteria
 
-- [ ] Any page can be rendered by passing a title and body to the layout
-- [ ] Setting a flash message on redirect displays a visible banner on the next page
-- [ ] Forms, tables and buttons look consistent without page-specific CSS
-- [ ] Layout is readable on a laptop and usable on a phone
+- [x] Any page can be rendered by passing a title and body to the layout
+- [x] Setting a flash message on redirect displays a visible banner on the next page
+- [x] Forms, tables and buttons look consistent without page-specific CSS
+- [x] Layout is readable on a laptop and usable on a phone
 
 ## Notes / decisions
 

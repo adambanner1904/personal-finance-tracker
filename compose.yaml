@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:18
+    restart: always
+    shm_size: 128mb
+    environment:
+      POSTGRES_DB: personal_finance_tracker
+      POSTGRES_USER: pft_app
+      POSTGRES_PASSWORD: finance
+    ports:
+      - 5432:5432
+    volumes:
+      - pft_postgres_data:/var/lib/postgresql
+
+volumes:
+  pft_postgres_data:
+      
+      

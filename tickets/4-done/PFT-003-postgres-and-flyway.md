@@ -1,7 +1,7 @@
 # PFT-003 — PostgreSQL connection and Flyway migration setup
 
 **Epic:** EPIC-01 Foundations
-**Status:** backlog
+**Status:** in progress
 **Size:** S
 **Prerequisites:** PFT-001
 
@@ -15,17 +15,17 @@ Schema evolution is guaranteed on this project. Versioned migrations from day on
 
 ## Tasks
 
-- [ ] Provision a local Postgres (Docker Compose is fine) and document it in the README
-- [ ] Add JDBC/HikariCP config for the `default` datasource
-- [ ] Add the Flyway sbt or Play module and point it at `conf/db/migration`
-- [ ] Configure migrations to run on startup in dev
-- [ ] Prove a trivial migration applies and is recorded in `flyway_schema_history`
+- [x] Provision a local Postgres (Docker Compose is fine) and document it in the README
+- [x] Add JDBC/HikariCP config for the `default` datasource
+- [x] Add the Flyway sbt or Play module and point it at `conf/db/migration`
+- [x] Configure migrations to run on startup in dev
+- [x] Prove a trivial migration applies and is recorded in `flyway_schema_history`
 
 ## Acceptance criteria
 
-- [ ] App starts against a completely empty database and migrates itself
-- [ ] Re-running the app does not re-apply migrations
-- [ ] Connection details come from env vars with dev defaults
+- [x] App starts against a completely empty database and migrates itself
+- [x] Re-running the app does not re-apply migrations
+- [x] Connection details come from env vars with dev defaults
 
 ## Notes / decisions
 
