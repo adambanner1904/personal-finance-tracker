@@ -15,10 +15,10 @@ Auth is the first real feature and everything else hangs off `user_id`. Reset to
 
 ## Tasks
 
-- [ ] `V1__create_users.sql`: `id`, `email` (unique, citext or lower-cased), `password_hash`, `created_at`, `updated_at`
-- [ ] `V2__create_password_reset_tokens.sql`: `id`, `user_id` FK, `token_hash`, `expires_at`, `used_at` nullable, `created_at`
-- [ ] Unique index on email; index on `password_reset_tokens.user_id`
-- [ ] FK from tokens to users with `ON DELETE CASCADE`
+- [x] `V1__create_users.sql`: `id`, `email` (unique, citext or lower-cased), `password_hash`, `created_at`, `updated_at`
+- [x] `V2__create_password_reset_tokens.sql`: `id`, `user_id` FK, `token_hash`, `expires_at`, `used_at` nullable, `created_at`
+- [x] Unique index on email; index on `password_reset_tokens.user_id`
+- [x] FK from tokens to users with `ON DELETE CASCADE`
 
 ## Acceptance criteria
 
