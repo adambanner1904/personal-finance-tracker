@@ -19,14 +19,14 @@ This is the seam between the app and the database. Establishing conventions once
 - [ ] Build a `Transactor` from Play config, provided via DI at application scope
 - [ ] Create `persistence` package with one repository trait+impl per aggregate
 - [ ] Add a `DbHealth` check running `SELECT 1` and expose it on `/health`
-- [ ] Add shared `Meta`/`Get`/`Put` instances for the account type and category enums
+- [ ] Add shared `Meta`/`Get`/`Put` instances 
 - [ ] Document the convention: repositories return `ConnectionIO`, services compose and run transactions
 
 ## Acceptance criteria
 
 - [ ] `/health` returns 200 when the DB is up and a clear failure when it is not
 - [ ] A repository method can be called end to end from a controller
-- [ ] Enum columns round-trip to Scala ADTs without stringly-typed code in controllers
+- [ ] Columns round-trip to Scala ADTs without stringly-typed code in controllers
 
 ## Notes / decisions
 
