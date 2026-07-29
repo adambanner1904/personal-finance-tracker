@@ -40,3 +40,7 @@ PGPASSWORD=finance psql -h localhost -p 5432 -U pft_app -d personal_finance_trac
 ```
 
 which will make sure that you can actually connect to the database locally. 
+
+## Database Schema
+
+![](docs/image.png)

@@ -15,21 +15,21 @@ The whole product is this shape. Getting the constraints in place at the databas
 
 ## Tasks
 
-- [ ] `institutions`: `id`, `user_id` FK, `name`, `created_at`, `updated_at`
-- [ ] `accounts`: `id`, `user_id` FK, `institution_id` FK, `name`, `account_type`, `category`, `archived_at` nullable, `created_at`, `updated_at`
-- [ ] `snapshots`: `id`, `user_id` FK, `snapshot_date` date, `notes` nullable, `created_at`, `updated_at`, `last_edited_at` nullable
-- [ ] `snapshot_entries`: `id`, `snapshot_id` FK, `account_id` FK, `balance numeric(14,2)`, `created_at`, `updated_at`
-- [ ] Unique `(user_id, snapshot_date)` on snapshots
-- [ ] Unique `(snapshot_id, account_id)` on snapshot_entries
-- [ ] CHECK constraints (or a lookup table) restricting `account_type` and `category` to the fixed v1 values
-- [ ] Indexes for the common reads: `accounts(user_id, archived_at)`, `snapshots(user_id, snapshot_date desc)`, `snapshot_entries(snapshot_id)`
+- [x] `institutions`: `id`, `user_id` FK, `name`, `created_at`, `updated_at`
+- [x] `accounts`: `id`, `user_id` FK, `institution_id` FK, `name`, `account_type`, `category`, `archived_at` nullable, `created_at`, `updated_at`
+- [x] `snapshots`: `id`, `user_id` FK, `snapshot_date` date, `notes` nullable, `created_at`, `updated_at`, `last_edited_at` nullable
+- [x] `snapshot_entries`: `id`, `snapshot_id` FK, `account_id` FK, `balance numeric(14,2)`, `created_at`, `updated_at`
+- [x] Unique `(user_id, snapshot_date)` on snapshots
+- [x] Unique `(snapshot_id, account_id)` on snapshot_entries
+- [x] CHECK constraints (or a lookup table) restricting `account_type` and `category` to the fixed v1 values
+- [x] Indexes for the common reads: `accounts(user_id, archived_at)`, `snapshots(user_id, snapshot_date desc)`, `snapshot_entries(snapshot_id)`
 
 ## Acceptance criteria
 
-- [ ] All migrations apply from empty in order
-- [ ] Two snapshots for the same user and date are rejected
-- [ ] Two entries for the same account in one snapshot are rejected
-- [ ] An invalid account_type or category is rejected at the DB level
+- [x] All migrations apply from empty in order
+- [x] Two snapshots for the same user and date are rejected
+- [x] Two entries for the same account in one snapshot are rejected
+- [x] An invalid account_type or category is rejected at the DB level
 
 ## Notes / decisions
 
