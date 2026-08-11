@@ -8,6 +8,21 @@
         <link rel="shortcut icon" type="image/png" href="@routes.Assets.versioned("images/favicon.png")">
     </head>
     <body>
+        <header class="site-header">
+            <div class="container site-header-inner">
+                <nav class="navbar">
+                    <ul class="nav-links nav-links-left">
+                        <li><a href="/">Home</a></li>
+                    </ul>
+                
+                    <ul class="nav-links nav-links-right">
+                        <li><a href="/auth/log-in">Log in</a></li>
+                        <li><a href="/auth/sign-up">Sign up</a></li>
+                    </ul>
+                </nav>
+
+            </div>
+        </header>
         <main class="page">
             <div class="container stack">
                 @components.flash() 
