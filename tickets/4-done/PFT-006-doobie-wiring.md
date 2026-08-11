@@ -15,8 +15,8 @@ This is the seam between the app and the database. Establishing conventions once
 
 ## Tasks
 
-- [ ] Add Doobie dependencies (`doobie-core`, `doobie-hikari`, `doobie-postgres`)
-- [ ] Build a `Transactor` from Play config, provided via DI at application scope
+- [x] Add Doobie dependencies (`doobie-core`, `doobie-hikari`, `doobie-postgres`)
+- [x] Build a `Transactor` from Play config, provided via DI at application scope
 - [ ] Create `persistence` package with one repository trait+impl per aggregate
 - [ ] Add a `DbHealth` check running `SELECT 1` and expose it on `/health`
 - [ ] Add shared `Meta`/`Get`/`Put` instances 

@@ -1,12 +1,13 @@
 package controllers
 
-import javax.inject._
-import play.api._
-import play.api.mvc._
+import play.api.*
+import play.api.mvc.*
+
+import javax.inject.*
 
 @Singleton
-class HomeController @Inject()(val controllerComponents: ControllerComponents) extends BaseController {
+class HomeController @Inject() (val controllerComponents: ControllerComponents)
+    extends BaseController:
   def index() = Action { implicit request: Request[?] =>
     Ok(views.html.index())
   }
-}

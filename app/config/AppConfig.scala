@@ -1,15 +1,7 @@
 package config
 
-
-import play.api.Configuration
-import javax.inject.{Singleton, Inject}
+import javax.inject.Inject
+import javax.inject.Singleton
 
 @Singleton
-class AppConfig @Inject() (config: Configuration) {
-
-  lazy val dbDriver = config.get[String]("db.default.driver")
-  lazy val dbUrl = config.get[String]("db.default.url")
-  lazy val dbUser = config.get[String]("db.default.user")
-  lazy val dbPassword = config.get[String]("db.default.password")
-}
-  
+class AppConfig @Inject() () {}

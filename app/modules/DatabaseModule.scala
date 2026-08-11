@@ -1,13 +1,15 @@
 package modules
 
-import com.google.inject.{AbstractModule, Provides, Singleton}
-import play.api.inject.ApplicationLifecycle
 import cats.effect.IO
+import com.google.inject.AbstractModule
+import com.google.inject.Provides
+import org.typelevel.doobie.hikari.HikariTransactor
 
-class DatabaseModule extends AbstractModule {
+import javax.inject.Singleton
 
-  // @Provides
-  // @Singleton
-  // def provideTransactor(lifecycle: ApplicationLifecycle): HikariTransactor[IO] = 
-  //   val transactor: HikariTransactor[IO] = HikariTransactor
-}
+class DatabaseModule extends AbstractModule:
+
+  @Provides
+  @Singleton
+  def provideHikariTransactor(provider: DatabaseTransactorProvider): HikariTransactor[IO] =
+    provider.get()
