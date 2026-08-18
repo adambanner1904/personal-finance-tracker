@@ -4,16 +4,17 @@ organization := "com.github.adambanner1904"
 version := "1.0-SNAPSHOT"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
-lazy val scalaversioin = "3.3.8"
+lazy val scalaversioin = "3.5.2"
 
 scalaVersion := scalaversioin
 lazy val doobieVersion = "1.0.0-RC13"
 
 libraryDependencies ++= Seq(
   guice,
+  "org.mindrot" % "jbcrypt" % "0.4",
   "org.postgresql" % "postgresql" % "42.7.13",
   "org.flywaydb" %% "flyway-play" % "9.1.0",
-  "org.typelevel" %% "cats-effect" % "3.5.4",
+  "org.typelevel" %% "cats-effect" % "3.7.0",
   "org.typelevel" %% "doobie-core" % doobieVersion,
   "org.typelevel" %% "doobie-postgres" % doobieVersion,
   "org.typelevel" %% "doobie-hikari" % doobieVersion,

@@ -1,0 +1,17 @@
+@import forms.*
+@import views.html.helper._
+
+@(userForm: Form[UserData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@layout.public("Sign up") {
+    <h1>
+        Sign up
+    </h1>
+    @form(action = routes.SignUpController.submit(), Symbol("class") -> "form-section") {
+        @CSRF.formField 
+        @inputText(userForm("Email"), Symbol("class") -> "form-field", Symbol("maxlength") -> "320")
+        @inputPassword(userForm("Password"), Symbol("class") -> "form-field", Symbol("minlength") -> "4")
+        @inputPassword(userForm("Confirm Password"), Symbol("class") -> "form-field", Symbol("minlength") -> "4")
+        <input type="submit" value="Submit">
+    }
+}

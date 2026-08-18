@@ -1,4 +1,6 @@
-package models.domain
+package models
+
+import org.typelevel.doobie.util.meta.Meta
 
 opaque type EmailAddress = String
 
@@ -16,7 +18,11 @@ object EmailAddress:
     else if !EmailRegex.matches(normalised) then Left(Error.InvalidFormat)
     else Right(normalised)
 
+  def unsafeFrom(value: String): EmailAddress = value
+
   extension (email: EmailAddress)
     def value: String = email
+
+  given Meta[EmailAddress] = Meta.StringMeta.imap(_.value)(unsafeFrom)
 
   
