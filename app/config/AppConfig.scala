@@ -1,7 +1,10 @@
 package config
 
-import javax.inject.Inject
-import javax.inject.Singleton
+import javax.inject.{
+  Inject,
+  Singleton
+}
+
 import scala.concurrent.duration.*
 
 @Singleton

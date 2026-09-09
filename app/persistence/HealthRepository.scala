@@ -1,9 +1,11 @@
 package persistence
 
-import javax.inject.Inject
 import models.db.Transactor
-import org.typelevel.doobie.implicits.*
+
+import javax.inject.Inject
+
 import cats.effect.unsafe.implicits.global
+import org.typelevel.doobie.implicits.*
 
 class HealthRepository @Inject() (xa: Transactor):
   def select1: Int = 

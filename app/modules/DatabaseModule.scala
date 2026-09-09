@@ -1,11 +1,13 @@
 package modules
 
-import cats.effect.IO
-import com.google.inject.AbstractModule
-import com.google.inject.Provides
-import org.typelevel.doobie.hikari.HikariTransactor
-
 import javax.inject.Singleton
+
+import cats.effect.IO
+import com.google.inject.{
+  AbstractModule,
+  Provides
+}
+import org.typelevel.doobie.hikari.HikariTransactor
 
 class DatabaseModule extends AbstractModule:
 

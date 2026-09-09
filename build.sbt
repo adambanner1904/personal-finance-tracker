@@ -13,7 +13,6 @@ libraryDependencies ++= Seq(
   guice,
   "org.mindrot" % "jbcrypt" % "0.4",
   "org.postgresql" % "postgresql" % "42.7.13",
-  "org.flywaydb" %% "flyway-play" % "9.1.0",
   "org.typelevel" %% "cats-effect" % "3.7.0",
   "org.typelevel" %% "doobie-core" % doobieVersion,
   "org.typelevel" %% "doobie-postgres" % doobieVersion,
@@ -24,9 +23,11 @@ libraryDependencies ++= Seq(
 )
 
 scalacOptions ++= Seq(
-  "-Wunused:all",
+  "-Wunused:imports",
   "-Wconf:src=src_managed/.*:s,src=routes:s"
 )
+
+scalafixOnCompile := true
 
 Test / fork := true
 Test / javaOptions += "-Dconfig.file=conf/application-test.conf"
@@ -39,9 +40,3 @@ inThisBuild(List(
 
 ThisBuild / scalafixConfig := Some(file(".scalafix.conf"))
 
-
-// Adds additional packages into Twirl
-//TwirlKeys.templateImports += "com.adambanner.controllers._"
-
-// Adds additional packages into conf/routes
-// play.sbt.routes.RoutesKeys.routesImport += "com.adambanner.binders._"

@@ -1,0 +1,15 @@
+[flyway]
+url = "jdbc:postgresql://localhost:5432/personal_finance_tracker"
+user = "pft_app"
+username = "pft_app"
+password = "finance"
+
+locations = [
+  "filesystem:conf/db/migration/default"
+]
+
+schemas = ["public"]
+defaultSchema = "public"
+
+validateOnMigrate = true
+cleanDisabled = true

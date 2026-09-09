@@ -2,8 +2,12 @@
 set -e
 
 # 1. Always attempt to start Colima; it no-ops if already running
-echo "Ensuring Colima is running..."
-colima start || echo "Colima start failed or already running; continuing..."
+echo "Ensuring Docker Desktop is running..."
+docker desktop start --detach || echo "Docker Desktop start failed or is already running; continuing..."
+
+echo "Using the Docker Desktop context..."
+unset DOCKER_HOST
+docker context use desktop-linux
 
 # 2. Start Postgres via docker-compose if it's not running
 if ! nc -z localhost 5432 2>/dev/null; then
@@ -12,7 +16,3 @@ if ! nc -z localhost 5432 2>/dev/null; then
 else
   echo "Postgres is already reachable on localhost:5432."
 fi
-
-# 3. Connect to Postgres
-echo "Connecting to Postgres..."
-PGPASSWORD=finance psql -h localhost -p 5432 -U pft_app -d personal_finance_tracker

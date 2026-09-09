@@ -1,17 +1,17 @@
 package modules
 
+import play.api.Configuration
+import play.api.inject.ApplicationLifecycle
+
+import javax.inject.{Inject, Singleton}
+
+import scala.concurrent.{ExecutionContext, Future}
+
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.zaxxer.hikari.HikariConfig
 import jakarta.inject.Provider
 import org.typelevel.doobie.hikari.HikariTransactor
-import play.api.Configuration
-import play.api.inject.ApplicationLifecycle
-
-import javax.inject.Inject
-import javax.inject.Singleton
-import scala.concurrent.ExecutionContext
-import scala.concurrent.Future
 
 @Singleton
 class DatabaseTransactorProvider @Inject() (

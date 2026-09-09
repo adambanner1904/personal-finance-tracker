@@ -1,6 +1,6 @@
 package models.db
 
-import org.typelevel.doobie.hikari.HikariTransactor
 import cats.effect.IO
+import org.typelevel.doobie.hikari.HikariTransactor
 
 type Transactor = HikariTransactor[IO]
