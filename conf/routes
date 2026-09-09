@@ -1,9 +1,17 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index()
+GET     /home                       controllers.HomeController.home()
 GET     /db-health                  controllers.DbHealthController.health()
 
+
+# Auth routes
 GET     /auth/sign-up               controllers.SignUpController.get()
 POST    /auth/sign-up               controllers.SignUpController.submit()
+
+GET     /auth/log-in                controllers.LogInController.get()
+POST    /auth/log-in                controllers.LogInController.submit()
+
+POST    /auth/log-out               controllers.LogOutController.post()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

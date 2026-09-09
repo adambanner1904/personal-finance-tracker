@@ -1,34 +1,43 @@
 package action
 
-import scala.concurrent.ExecutionContext
 import play.api.mvc.*
-import play.api.mvc.Results.* 
-import scala.concurrent.Future
-import javax.inject.Inject
-import services.AuthService
-import java.util.UUID
-import java.time.{Instant, Duration}
+import play.api.mvc.Results.*
+
 import models.Time
-import scala.concurrent.duration.DurationInt
+import services.AuthService
 
-class AuthenticatedAction @Inject() (authService: AuthService)(using ExecutionContext) 
-  extends ActionRefiner[Request, UserRequest]: 
-    def executionContext: ExecutionContext = summon[ExecutionContext]
-    def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] = Future.successful { 
-      for 
-        sessionId <- request.cookies.get("sessionId")
-          .map(cookie => UUID.fromString(cookie.value))
-          .toRight(Unauthorized)
-        session <- authService.getSession(sessionId).left.map(_ => Unauthorized) // may need to be more specific here
-      yield 
-        given userRequest: UserRequest[A] = UserRequest(session, request)
-        if session.expiresAt - Time.now <= 5.minutes
-          then authService.keepAlive
+import java.util.UUID
+import javax.inject.Inject
 
-        userRequest
-      
-    }
+import scala.concurrent.{
+  ExecutionContext,
+  Future
+}
+import scala.util.Try
 
-object AuthenticatedAction:
-  extension (time1: Instant)
-    def -(time2: Instant) = Math.abs(Duration.between(time1, time2).toMinutes())
+class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyParsers.Default)(using ExecutionContext)
+    extends ActionBuilder[UserRequest,AnyContent]
+    with ActionRefiner[Request, UserRequest]:
+  protected def executionContext: ExecutionContext = summon[ExecutionContext]
+  protected def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] = Future.successful {
+
+    val redirectToLogin = SeeOther(controllers.routes.SignUpController.get().url)
+
+    for
+      cookie <- request.cookies
+        .get("session-id")
+        .toRight(redirectToLogin) // fails if no cookie
+      sessionId <- Try(UUID.fromString(cookie.value))
+        .toOption
+        .toRight(redirectToLogin) // fails if cookie is malformed
+      session <- authService
+        .getSession(sessionId)
+        .toRight(redirectToLogin)  // can fail if session not found 
+      _ <- Either.cond(
+        session.expiresAt < Time.now, // fails if session has expired
+        authService.keepAlive(session), // if session has not expired then keep alive
+        redirectToLogin
+      )
+    yield UserRequest(session, request)
+
+  }

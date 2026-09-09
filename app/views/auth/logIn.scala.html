@@ -1,0 +1,16 @@
+@import forms.*
+@import views.html.helper._
+
+@(userForm: Form[UserLogInData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@layout.public("Log in") {
+    <h1>
+        Log in 
+    </h1>
+    @form(action = routes.LogInController.submit(), Symbol("class") -> "form-section") {
+        @CSRF.formField 
+        @inputText(userForm("Email"), Symbol("class") -> "form-field", Symbol("maxlength") -> "320")
+        @inputPassword(userForm("Password"), Symbol("class") -> "form-field", Symbol("minlength") -> "4")
+        <input type="submit" value="Submit">
+    }
+}

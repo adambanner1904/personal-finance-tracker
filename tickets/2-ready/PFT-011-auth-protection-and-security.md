@@ -15,9 +15,9 @@ This is the single most important ticket for keeping financial data safe. Doing 
 
 ## Tasks
 
-- [ ] Build an `AuthenticatedAction` action builder producing a request with the resolved user
-- [ ] Apply it to every route except signup, login, reset request and reset complete
-- [ ] Unauthenticated requests redirect to login (remember the intended URL if easy)
+- [x] Build an `AuthenticatedAction` action builder producing a request with the resolved user
+- [x] Apply it to every route except signup, login, reset request and reset complete
+- [x] Unauthenticated requests redirect to login (remember the intended URL if easy)
 - [ ] Enable Play's CSRF filter and add the token to every form
 - [ ] Configure secure session cookies for production: `httpOnly`, `secure`, `sameSite=Lax`, signed with an env-supplied secret
 - [ ] Establish the convention that every repository read and write is filtered by `user_id`
@@ -25,7 +25,7 @@ This is the single most important ticket for keeping financial data safe. Doing 
 
 ## Acceptance criteria
 
-- [ ] Hitting any app URL while logged out redirects to login
+- [x] Hitting any app URL while logged out redirects to login
 - [ ] A form POST without a CSRF token is rejected
 - [ ] Session cookie flags are correct in the production config
 - [ ] Manually crafting a request for a non-owned record returns not-found, not data
