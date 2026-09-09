@@ -1,46 +1,76 @@
 package services
 
-import javax.inject.{Inject, Singleton}
-import persistence.{UserRepository, SessionRepository}
-import models.db.*
-import models.*
-import org.mindrot.jbcrypt.BCrypt
-import org.typelevel.doobie.implicits.*
-import cats.effect.unsafe.implicits.global
-import java.util.UUID
 import config.AppConfig
+import models.*
+import models.db.Transactor
+import models.errors.*
+import persistence.{SessionRepository, UserRepository}
+
+import java.util.UUID
+import javax.inject.{Inject, Singleton}
 
 import scala.concurrent.duration.*
-import action.UserRequest
 
+import cats.effect.unsafe.implicits.global
+import org.mindrot.jbcrypt.BCrypt
+import org.typelevel.doobie.implicits.*
 
 @Singleton
 class AuthService @Inject() (
-  appConfig: AppConfig, 
-  userRepo: UserRepository, 
-  sessionRepo: SessionRepository, 
-  xa: Transactor
+  appConfig: AppConfig,
+  userRepo: UserRepository,
+  sessionRepo: SessionRepository,
+  xa: Transactor,
 ):
-  
-  def createUser(email: String, password: String): Either[EmailAddress.Error | DbError, User] = 
-    val passwordHash = BCrypt.hashpw(password, BCrypt.gensalt())
+  import AuthService.*
 
-    for 
-      validEmail <- EmailAddress.from(email) 
-      user <- userRepo.insertUser(validEmail, passwordHash).transact(xa).unsafeRunSync()
-    yield user
+  def createUser(email: String, password: String): Either[SignUpError, UUID] =
+    for
+      validEmail <- EmailAddress.from(email).left.map(SignUpError.InvalidEmail(_))
+      userId     <- userRepo
+        .insertUser(validEmail, hash(password))
+        .transact(xa)
+        .unsafeRunSync()
+      sessionId = sessionRepo
+        .createSession(userId)
+        .transact(xa)
+        .unsafeRunSync()
+    yield sessionId
 
-  def getSession(maybeSessionId: UUID): Either[DbError, Session] = ??? 
+  // Can be None if not present in table
+  def getSession(sessionId: UUID): Option[Session] =
+    sessionRepo.getSession(sessionId).transact(xa).unsafeRunSync()
 
-  def deleteSession(sessionId: UUID): Unit = ??? 
+  def deleteSession(sessionId: UUID): Unit =
+    sessionRepo.deleteSession(sessionId).transact(xa).unsafeRunSync()
 
-  def createSession(userId: Long): Session = ??? 
+  def loginUser(email: String, password: String): Either[LoginError, UUID] =
+    for
+      validEmail <- EmailAddress.from(email).left.map(LoginError.InvalidEmail(_))
+      user       <- userRepo
+        .loadUser(validEmail)
+        .transact(xa)
+        .unsafeRunSync()
+        .toRight(LoginError.InvalidCredentials)
+      _ <- Either.cond(
+        passwordsMatch(password, user.passwordHash),
+        (),
+        LoginError.InvalidCredentials,
+      )
+      sessionId = sessionRepo
+        .createSession(user.id)
+        .transact(xa)
+        .unsafeRunSync()
+    yield sessionId
 
-  def updateSession(userId: Long)(newExpiryTime: Time): Unit = ???
-
-  def keepAlive(using request: UserRequest[?]): Unit = 
-    val session = request.userSession
+  def keepAlive(session: Session): Unit =
     if session.expiresAt - Time.now <= 5.minutes
-      then sessionRepo.updateSession(session.sessionId)(Time.now + appConfig.sessionTimeToLive)
-      
-    
+    then sessionRepo.updateSession(session.sessionId)(Time.now + appConfig.sessionTimeToLive)
+
+object AuthService:
+
+  def hash(password: String) =
+    BCrypt.hashpw(password, BCrypt.gensalt())
+
+  def passwordsMatch(givenPassword: String, userPasswordHash: String) =
+    BCrypt.checkpw(givenPassword, userPasswordHash)

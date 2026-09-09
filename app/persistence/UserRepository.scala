@@ -1,20 +1,23 @@
 package persistence
 
-import org.typelevel.doobie.postgres.*
-import org.typelevel.doobie.implicits.*
-import org.typelevel.doobie.postgres.implicits.*
-import models.EmailAddress
-import org.typelevel.doobie.ConnectionIO
-import models.User
-import models.db.DbError
+import models.errors.SignUpError
+import models.{EmailAddress, User}
 
+import org.typelevel.doobie.ConnectionIO
+import org.typelevel.doobie.implicits.*
+import org.typelevel.doobie.postgres.*
 
 class UserRepository:
   
-  def insertUser(email: EmailAddress, passwordHash: String): ConnectionIO[Either[DbError, User]] = 
+  def insertUser(email: EmailAddress, passwordHash: String): ConnectionIO[Either[SignUpError, Long]] = 
     sql"insert into users (email, password_hash) values (${email.value}, $passwordHash)"
       .update
-      .withUniqueGeneratedKeys[User]("id", "email", "password_hash", "created_at", "updated_at")
+      .withUniqueGeneratedKeys[Long]("id")
       .attemptSomeSqlState: 
-        case sqlstate.class23.UNIQUE_VIOLATION => DbError.UniqueViolation
+        case sqlstate.class23.UNIQUE_VIOLATION => SignUpError.EmailAlreadyUsed
+
+  def loadUser(email: EmailAddress): ConnectionIO[Option[User]] = 
+    sql"select * from users where email = $email"
+      .query[User]
+      .option
 
