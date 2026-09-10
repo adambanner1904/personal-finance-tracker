@@ -13,6 +13,7 @@ class LogOutController @Inject() (
   authenticatedAction: AuthenticatedAction,
   authService: AuthService,
 ) extends MessagesAbstractController(mcc):
+
   def post = authenticatedAction { implicit userRequest: UserRequest[?] =>
     val sessionId = userRequest.userSession.sessionId
     authService.deleteSession(sessionId)

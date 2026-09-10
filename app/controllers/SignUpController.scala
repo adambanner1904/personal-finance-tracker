@@ -37,7 +37,7 @@ class SignUpController @Inject() (authService: AuthService, val mcc: MessagesCon
               Redirect(thisPage)
                 .flashing("error" -> "That email already has an account, please log in instead")
             case Right(sessionId) =>
-              Redirect(routes.HomeController.index())
+              Redirect(routes.HomeController.home())
                 .withCookies(Cookie("session-id", sessionId.toString))
                 .flashing("success" -> s"User account has been created."),
       )
