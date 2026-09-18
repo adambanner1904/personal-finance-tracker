@@ -18,10 +18,11 @@ import scala.util.Try
 class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyParsers.Default)(using ExecutionContext)
     extends ActionBuilder[UserRequest,AnyContent]
     with ActionRefiner[Request, UserRequest]:
+    
   protected def executionContext: ExecutionContext = summon[ExecutionContext]
   protected def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] = Future.successful {
 
-    val redirectToLogin = SeeOther(controllers.routes.SignUpController.get().url)
+    val redirectToLogin = SeeOther(controllers.routes.LogInController.get().url)
 
     for
       cookie <- request.cookies

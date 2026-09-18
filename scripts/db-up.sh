@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-# 1. Always attempt to start Colima; it no-ops if already running
+# 1. Always attempt to start docker desktop; it no-ops if already running
 echo "Ensuring Docker Desktop is running..."
 docker desktop start --detach || echo "Docker Desktop start failed or is already running; continuing..."
 
@@ -16,3 +16,6 @@ if ! nc -z localhost 5432 2>/dev/null; then
 else
   echo "Postgres is already reachable on localhost:5432."
 fi
+
+# 3. Migrate test db as it unsets whenever we compose it down
+scripts/flyway-migrate.sh

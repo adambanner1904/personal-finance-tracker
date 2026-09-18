@@ -17,12 +17,12 @@ class SessionRepository:
       .withUniqueGeneratedKeys[UUID]("session_id")
 
   def getSession(sessionId: UUID): ConnectionIO[Option[Session]] =
-    sql"select * from user_sessions"
+    sql"select * from user_sessions where session_id = $sessionId"
       .query[Session]
       .option
 
   def updateSession(sessionId: UUID)(newExpiryTime: Time): ConnectionIO[Unit] =
-    sql"update user_sessions set expiryTime = $newExpiryTime where session_id = $sessionId".update.run
+    sql"update user_sessions set expires_at = $newExpiryTime where session_id = $sessionId".update.run
       .map(_ => ())
 
   def deleteSession(sessionId: UUID): ConnectionIO[Unit] =

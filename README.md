@@ -14,32 +14,41 @@ The main purpose is to replace a spreadsheet that I have been using for many yea
 - Java 21.0.6
 - docker 29.6.2
 - docker-compose 5.3.1
+- docker-desktop (as daemon)
 
 ## Run locally
 
 Start the service 
 
 ```bash 
-sbt run 
+scripts/dev-start.sh
 ```
 
-And then navigate to `http://localhost:9000`
+This script runs the `scripts/db-up.sh` script and then `sbt run`. The `db-up.sh` script:  
+
+1. makes sure that docker desktop is running
+2. runs docker compose up provided the dev db port is not already in use
+3. runs the `scripts/flyway-migrate.sh` which ensures both dev and test db's are up to date with their schema
+
+Provided everything ran successfully, you should be able to navigate to `http://localhost:9000`. 
 
 ### Postgres
 
-This project is using a postgres docker container on port `5432`. You can start this container by running
+As mentioned before this project makes use of two local postgres db's ran via docker containers. One for locally running application (dev) and one for the test's to make use of (test). 
+
+This script set's up the databases locally: 
 
 ```bash
-docker-compose up -d
+scripts/db-up.sh
 ```
 
-You can validate that postgres is set up locally by running the following command: 
+You can validate that postgres is set up locally by running the following command to connect to the dev one: 
 
 ```bash 
-PGPASSWORD=finance psql -h localhost -p 5432 -U pft_app -d personal_finance_tracker -c "SELECT 1;"
+scripts/connect-to-db.sh
 ```
 
-which will make sure that you can actually connect to the database locally. 
+which will make sure that you can actually connect to the development database locally. 
 
 ## Database Schema
 

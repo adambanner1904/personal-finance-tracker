@@ -1,18 +1,19 @@
 package basespecs
 
+import models.db.Transactor
+
+import cats.effect.unsafe.IORuntime
 import cats.effect.unsafe.implicits.global
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import org.typelevel.doobie.implicits.*
-import models.db.Transactor
-import cats.effect.unsafe.IORuntime
 
-class DatabaseBaseSpec extends PlaySpec with GuiceOneAppPerSuite with BeforeAndAfterEach:
+class DbSpec 
+  extends UnitSpec
+  with BeforeAndAfterEach:
 
   given IORuntime = global
 
-  lazy val xa: Transactor = app.injector.instanceOf[Transactor]
+  lazy val xa: Transactor = inject[Transactor]
 
   override def beforeEach(): Unit = truncateAll()
 

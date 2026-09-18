@@ -1,7 +1,6 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index()
 GET     /home                       controllers.HomeController.home()
-GET     /db-health                  controllers.DbHealthController.health()
 
 
 # Auth routes
