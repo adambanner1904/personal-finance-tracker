@@ -1,43 +1,68 @@
 package controllers
 
-import org.scalatestplus.play.*
-import org.scalatestplus.play.guice.*
-import play.api.test.Helpers.*
-import play.api.test.*
+import basespecs.UnitSpec
+import models.Time
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+
+import java.util.UUID
+import scala.concurrent.duration._
+
+import helpers.AuthHelpers.requestWithSession
+import org.mockito.Mockito.when
 
 /** Add your spec here. You can mock out a whole application including requests, plugins etc.
   *
   * For more information, see
   * https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
   */
-class HomeControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting:
+class HomeControllerSpec extends UnitSpec:
 
-  "HomeController GET" should {
+  val controller           = new HomeController(controllerComponents, authenticatedAction)
 
-    "render the index page from a new instance of controller" in {
-      val controller = new HomeController(stubControllerComponents())
-      val home       = controller.index().apply(FakeRequest(GET, "/"))
+  val indexRequest = FakeRequest(GET, "/")
+  val index        = controller.index().apply(indexRequest)
 
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include("Welcome to Play")
-    }
+  "HomeController GET /index" should:
+    "render the index page from a new instance of controller" in:
+      status(index) shouldBe OK
+      contentType(index) shouldBe Some("text/html")
+      contentAsString(index) should include("Welcome to Play")
 
-    "render the index page from the application" in {
-      val controller = inject[HomeController]
-      val home       = controller.index().apply(FakeRequest(GET, "/"))
+      
+  "HomeController GET /home" should:
+    "fail and redirect to log in page if user has no session-id in Cookies" in:
+      val homePage = controller.home().apply(requestWithSession(None))
+      status(homePage) shouldBe SEE_OTHER
+      redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include("Welcome to Play")
-    }
+    "fail and redirect to log in page if user has a malformed session-id in Cookies" in:
+      val homePage = controller.home().apply(requestWithSession(Some("malformed-uuid")))
+      status(homePage) shouldBe SEE_OTHER
+      redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
-    "render the index page from the router" in {
-      val request = FakeRequest(GET, "/")
-      val home    = route(app, request).get
+    "fail and redirect to log in page if user has a session-id in Cookies that cannot be found" in:
+      val sessionId = UUID.randomUUID()
 
-      status(home) mustBe OK
-      contentType(home) mustBe Some("text/html")
-      contentAsString(home) must include("Welcome to Play")
-    }
-  }
+      when(mockAuthService.getSession(sessionId)).thenReturn(None) // Mockito's default null breaks Option handling, so stub explicitly
+
+      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      status(homePage) shouldBe SEE_OTHER
+      redirectLocation(homePage) shouldBe Some("/auth/log-in")
+
+    "fail and redirect to log in page if user has a session-id in Cookies that has expired" in:
+      val sessionId = UUID.randomUUID()
+      mockSession(sessionId, userId = 1L, expiresAt = Time.now - 30.minutes)
+
+      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      status(homePage) shouldBe SEE_OTHER
+      redirectLocation(homePage) shouldBe Some("/auth/log-in")
+
+    "render the home page when the session-id in Cookies is valid" in:
+      val sessionId = UUID.randomUUID()
+      mockSession(sessionId, userId = 1L, expiresAt = Time.now + 30.minutes)
+      
+      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      status(homePage) shouldBe OK
+      contentType(homePage) shouldBe Some("text/html")
+      contentAsString(homePage) should include("You are logged in")

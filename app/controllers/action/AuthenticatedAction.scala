@@ -35,7 +35,7 @@ class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyP
         .getSession(sessionId)
         .toRight(redirectToLogin)  // can fail if session not found 
       _ <- Either.cond(
-        session.expiresAt < Time.now, // fails if session has expired
+        Time.now < session.expiresAt, // fails if session has expired
         authService.keepAlive(session), // if session has not expired then keep alive
         redirectToLogin
       )

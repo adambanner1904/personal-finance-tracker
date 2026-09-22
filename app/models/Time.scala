@@ -17,12 +17,15 @@ object Time:
   
   extension (time1: Time)
     def value: Instant = time1
-    infix def -(time2: Time): FiniteDuration = FiniteDuration(JavaDuration.between(time2, time1).toMinutes(), "m")
+    infix def -(time2: Time): FiniteDuration = 
+      FiniteDuration(JavaDuration.between(time2, time1).toMinutes(), "m")
+    infix def -(duration: FiniteDuration): Time = 
+      time1.minus(JavaDuration.ofMillis(duration.toMillis))
     infix def +(duration: FiniteDuration): Time = 
-          time1.plus(JavaDuration.ofMillis(duration.toMillis))
+      time1.plus(JavaDuration.ofMillis(duration.toMillis))
 
-    infix def >(time2: Time): Boolean = JavaDuration.between(time2, time1).toSeconds > 0
-    infix def <(time2: Time): Boolean = JavaDuration.between(time2, time1).toSeconds < 0
+    infix def >(time2: Time): Boolean = time1.isAfter(time2)
+    infix def <(time2: Time): Boolean = time1.isBefore(time2)
 
   import org.typelevel.doobie.implicits.javatimedrivernative.JavaInstantMeta
   given Meta[Time] = Meta[Instant](using JavaInstantMeta).imap(unsafeFrom)(_.value)
