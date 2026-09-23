@@ -1,11 +1,12 @@
 package persistence
 
-import basespecs.DbSpec
-import java.util.UUID
-import java.time.Instant
-
-import org.typelevel.doobie.implicits.*
 import models.*
+
+import java.time.Instant
+import java.util.UUID
+
+import basespecs.DbSpec
+import org.typelevel.doobie.implicits.*
 
 class SessionRepositorySpec extends DbSpec:
 

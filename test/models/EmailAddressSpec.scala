@@ -1,6 +1,7 @@
 package models
 
 import models.errors.ParseEmailError
+
 import basespecs.UnitSpec
 
 class EmailAddressSpec extends UnitSpec:

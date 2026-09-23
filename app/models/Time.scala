@@ -1,9 +1,6 @@
 package models
 
-import java.time.{
-  Duration as JavaDuration,
-  Instant
-}
+import java.time.{Duration as JavaDuration, Instant}
 
 import scala.concurrent.duration.*
 
@@ -13,15 +10,15 @@ opaque type Time = Instant
 
 object Time:
   def unsafeFrom(value: Instant): Time = value
-  def now: Time = unsafeFrom(Instant.now())
-  
+  def now: Time                        = unsafeFrom(Instant.now())
+
   extension (time1: Time)
-    def value: Instant = time1
-    infix def -(time2: Time): FiniteDuration = 
+    def value: Instant                       = time1
+    infix def -(time2: Time): FiniteDuration =
       FiniteDuration(JavaDuration.between(time2, time1).toMinutes(), "m")
-    infix def -(duration: FiniteDuration): Time = 
+    infix def -(duration: FiniteDuration): Time =
       time1.minus(JavaDuration.ofMillis(duration.toMillis))
-    infix def +(duration: FiniteDuration): Time = 
+    infix def +(duration: FiniteDuration): Time =
       time1.plus(JavaDuration.ofMillis(duration.toMillis))
 
     infix def >(time2: Time): Boolean = time1.isAfter(time2)

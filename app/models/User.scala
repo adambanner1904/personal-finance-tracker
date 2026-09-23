@@ -3,9 +3,9 @@ package models
 import models.*
 
 case class User(
-  id: Long, 
-  email: EmailAddress, 
-  passwordHash: String, 
+  id: Long,
+  email: EmailAddress,
+  passwordHash: String,
   createdAt: Time,
-  updatedAt: Time, 
+  updatedAt: Time,
 )

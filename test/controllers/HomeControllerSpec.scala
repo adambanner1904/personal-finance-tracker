@@ -1,20 +1,24 @@
 package controllers
 
-import basespecs.UnitSpec
-import models.Time
+import play.api.mvc.{
+  BodyParsers,
+  ControllerComponents
+}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+
+import action.AuthenticatedAction
+import models.Time
 
 import java.util.UUID
-import scala.concurrent.duration._
 
-import helpers.AuthHelpers.requestWithSession
-import org.mockito.Mockito.when
-import play.api.mvc.{ControllerComponents}
-import action.AuthenticatedAction
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration.*
+
+import basespecs.UnitSpec
+import helpers.AuthHelpers.requestWithSession
 import mocks.MockAuthService
-import play.api.mvc.BodyParsers
+import org.mockito.Mockito.when
 
 class HomeControllerSpec extends UnitSpec with MockAuthService:
 

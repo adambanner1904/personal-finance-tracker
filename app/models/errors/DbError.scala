@@ -1,5 +1,4 @@
 package models.errors
 
-
-enum DbError: 
+enum DbError:
   case UniqueViolation

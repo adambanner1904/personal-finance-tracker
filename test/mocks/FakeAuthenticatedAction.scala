@@ -1,8 +1,10 @@
 package mocks
 
+import play.api.mvc.*
+
 import action.UserRequest
 import models.Session
-import play.api.mvc._
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class FakeAuthenticatedAction(session: Option[Session])(using ec: ExecutionContext)

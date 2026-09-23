@@ -1,8 +1,10 @@
 package models
 
-import basespecs.UnitSpec
 import java.time.Instant
+
 import scala.concurrent.duration.*
+
+import basespecs.UnitSpec
 
 class TimeSpec extends UnitSpec:
   "Time operations" should:

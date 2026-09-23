@@ -1,13 +1,14 @@
 package controllers
 
-import play.api.test.Helpers.*
-import play.api.test.FakeRequest
-import play.api.test.CSRFTokenHelper.*
-import mocks.MockAuthService
-import basespecs.UnitSpec
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.CSRFTokenHelper.*
+import play.api.test.FakeRequest
+import play.api.test.Helpers.*
 
-import models.errors.{SignUpError, ParseEmailError}
+import models.errors.{ParseEmailError, SignUpError}
+
+import basespecs.UnitSpec
+import mocks.MockAuthService
 
 class SignUpControllerSpec extends UnitSpec with MockAuthService:
 

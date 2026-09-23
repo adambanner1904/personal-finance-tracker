@@ -1,8 +1,10 @@
 package services
 
-import basespecs.UnitSpec
-import java.util.UUID
 import models.errors.LoginError
+
+import java.util.UUID
+
+import basespecs.UnitSpec
 
 class AuthServiceSpec extends UnitSpec:
   val authService = inject[AuthService]

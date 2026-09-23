@@ -1,4 +1,4 @@
 package models.errors
 
-enum SessionError: 
+enum SessionError:
   case SessionNotFound, SessionExpired

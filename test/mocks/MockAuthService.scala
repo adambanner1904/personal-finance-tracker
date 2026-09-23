@@ -1,12 +1,14 @@
 package mocks
 
 
-import services.AuthService
+import models.errors.SignUpError
 import models.{Session, Time}
+import services.AuthService
+
 import java.util.UUID
+
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import models.errors.SignUpError
 
 trait MockAuthService extends MockitoSugar:
 

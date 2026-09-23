@@ -7,7 +7,7 @@ import forms.*
 import models.errors.*
 import services.AuthService
 
-import javax.inject.* 
+import javax.inject.*
 
 class SignUpController @Inject() (authService: AuthService, val mcc: MessagesControllerComponents)
     extends MessagesAbstractController(mcc)

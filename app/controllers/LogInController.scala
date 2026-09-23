@@ -26,15 +26,17 @@ class LogInController @Inject() (authService: AuthService, val mcc: MessagesCont
           logger.warn(s"Log in form errored with ${formWithErrors.errors}")
           BadRequest(views.html.auth.logIn(formWithErrors))
         ,
-        logInData => authService.loginUser(logInData.email, logInData.password) match 
-          case Left(InvalidEmail(err)) =>
-            Redirect(thisPage)
-              .flashing("error" -> err.message)
-          case Left(InvalidCredentials) => 
-            Redirect(thisPage)
-              .flashing("error" -> "Username or password not found")
-          case Right(sessionId) => 
-            Redirect(routes.HomeController.home()).withCookies(Cookie("session-id", sessionId.toString))
+        logInData =>
+          authService.loginUser(logInData.email, logInData.password) match
+            case Left(InvalidEmail(err)) =>
+              Redirect(thisPage)
+                .flashing("error" -> err.message)
+            case Left(InvalidCredentials) =>
+              Redirect(thisPage)
+                .flashing("error" -> "Username or password not found")
+            case Right(sessionId) =>
+              Redirect(routes.HomeController.home())
+                .withCookies(Cookie("session-id", sessionId.toString)),
       )
 
   }

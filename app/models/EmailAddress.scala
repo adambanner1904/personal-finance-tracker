@@ -8,7 +8,7 @@ import org.typelevel.doobie.util.meta.Meta
 opaque type EmailAddress = String
 
 object EmailAddress:
-  private val MaxLength = 320
+  private val MaxLength  = 320
   private val EmailRegex = "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$".r
 
   def from(value: String): Either[ParseEmailError, EmailAddress] =
@@ -20,9 +20,6 @@ object EmailAddress:
 
   def unsafeFrom(value: String): EmailAddress = value
 
-  extension (email: EmailAddress)
-    def value: String = email
+  extension (email: EmailAddress) def value: String = email
 
   given Meta[EmailAddress] = Meta.StringMeta.imap(_.value)(unsafeFrom)
-
-  

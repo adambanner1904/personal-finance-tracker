@@ -8,16 +8,17 @@ import org.typelevel.doobie.implicits.*
 import org.typelevel.doobie.postgres.*
 
 class UserRepository:
-  
-  def insertUser(email: EmailAddress, passwordHash: String): ConnectionIO[Either[SignUpError, Long]] = 
-    sql"insert into users (email, password_hash) values (${email.value}, $passwordHash)"
-      .update
+
+  def insertUser(
+    email: EmailAddress,
+    passwordHash: String,
+  ): ConnectionIO[Either[SignUpError, Long]] =
+    sql"insert into users (email, password_hash) values (${email.value}, $passwordHash)".update
       .withUniqueGeneratedKeys[Long]("id")
-      .attemptSomeSqlState: 
+      .attemptSomeSqlState:
         case sqlstate.class23.UNIQUE_VIOLATION => SignUpError.EmailAlreadyUsed
 
-  def loadUser(email: EmailAddress): ConnectionIO[Option[User]] = 
+  def loadUser(email: EmailAddress): ConnectionIO[Option[User]] =
     sql"select * from users where email = $email"
       .query[User]
       .option
-
