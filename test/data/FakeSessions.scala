@@ -11,6 +11,14 @@ trait FakeSessions:
   val validUserId = 1L
   val expiredUserId = 2L
 
+  def createSession(sessionId: UUID, userId: Long, createdAt: Time = Time.now, expiresAt: Time = Time.now + 30.minutes): Session =
+    Session(
+      sessionId = sessionId,
+      userId = userId,
+      createdAt = createdAt,
+      expiresAt = expiresAt
+    )
+
   val validSession = Session(
     sessionId = validSessionId,
     userId = validUserId,

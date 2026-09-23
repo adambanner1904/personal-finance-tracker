@@ -18,5 +18,4 @@ class LogOutController @Inject() (
     val sessionId = userRequest.userSession.sessionId
     authService.deleteSession(sessionId)
     Redirect(routes.HomeController.index()).discardingCookies(DiscardingCookie("session-id"))
-
   }

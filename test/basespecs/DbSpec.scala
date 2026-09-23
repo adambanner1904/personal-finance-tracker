@@ -23,3 +23,10 @@ class DbSpec
       .run
       .transact(xa)
       .unsafeRunSync()
+
+  def createTestUser(email: String, passwordHash: String): Long =
+    sql"INSERT INTO users (email, password_hash) VALUES ($email, $passwordHash)"
+      .update
+      .withUniqueGeneratedKeys[Long]("id")
+      .transact(xa)
+      .unsafeRunSync()
