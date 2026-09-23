@@ -10,12 +10,16 @@ import org.scalatest.{
 }
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 
+import scala.concurrent.ExecutionContext
+
 class UnitSpec 
   extends AnyWordSpec 
   with Matchers 
   with GuiceOneAppPerSuite 
   with OptionValues
   with EitherValues
-  with Injecting
+  with Injecting: 
+
+  given ExecutionContext = inject[ExecutionContext]
 
   

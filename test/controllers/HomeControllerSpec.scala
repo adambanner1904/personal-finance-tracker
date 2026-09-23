@@ -12,7 +12,6 @@ import models.Time
 
 import java.util.UUID
 
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.*
 
 import basespecs.UnitSpec
@@ -24,7 +23,6 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
 
   val cc = inject[ControllerComponents]
   val bp = inject[BodyParsers.Default]
-  given ExecutionContext = cc.executionContext
   
   val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, bp)
 
@@ -41,13 +39,15 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
 
       
   "HomeController GET /home" should:
+    def getHomePage(sessionId: Option[String]) =
+      controller.home().apply(requestWithSession(GET, "/home", sessionId))
     "fail and redirect to log in page if user has no session-id in Cookies" in:
-      val homePage = controller.home().apply(requestWithSession(None))
+      val homePage = getHomePage(None)
       status(homePage) shouldBe SEE_OTHER
       redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
     "fail and redirect to log in page if user has a malformed session-id in Cookies" in:
-      val homePage = controller.home().apply(requestWithSession(Some("malformed-uuid")))
+      val homePage = getHomePage(Some("malformed-id"))
       status(homePage) shouldBe SEE_OTHER
       redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
@@ -56,7 +56,7 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
 
       when(mockAuthService.getSession(sessionId)).thenReturn(None)
 
-      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      val homePage = getHomePage(Some(sessionId.toString))
       status(homePage) shouldBe SEE_OTHER
       redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
@@ -64,7 +64,7 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
       val sessionId = UUID.randomUUID()
       mockGetSession(sessionId, userId = 1L, expiresAt = Time.now - 30.minutes)
 
-      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      val homePage = getHomePage(Some(sessionId.toString))
       status(homePage) shouldBe SEE_OTHER
       redirectLocation(homePage) shouldBe Some("/auth/log-in")
 
@@ -72,7 +72,7 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
       val sessionId = UUID.randomUUID()
       mockGetSession(sessionId, userId = 1L, expiresAt = Time.now + 30.minutes)
       
-      val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
+      val homePage = getHomePage(Some(sessionId.toString))
       status(homePage) shouldBe OK
       contentType(homePage) shouldBe Some("text/html")
       contentAsString(homePage) should include("You are logged in")

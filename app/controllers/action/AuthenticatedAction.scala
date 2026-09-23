@@ -12,10 +12,11 @@ import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
+trait UserAction extends ActionBuilder[UserRequest, AnyContent] with ActionRefiner[Request, UserRequest]
+
 class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyParsers.Default)(
   using ExecutionContext,
-) extends ActionBuilder[UserRequest, AnyContent]
-    with ActionRefiner[Request, UserRequest]:
+) extends UserAction:
 
   protected def executionContext: ExecutionContext = summon[ExecutionContext]
   protected def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] =

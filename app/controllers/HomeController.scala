@@ -3,14 +3,14 @@ package controllers
 import play.api.*
 import play.api.mvc.*
 
-import action.AuthenticatedAction
+import action.UserAction
 
 import javax.inject.*
 
 @Singleton
 class HomeController @Inject() (
   val controllerComponents: ControllerComponents,
-  val authenticatedAction: AuthenticatedAction,
+  val authenticatedAction: UserAction,
 ) extends BaseController:
   def index() = Action { implicit request: Request[?] =>
     Ok(views.html.index())
