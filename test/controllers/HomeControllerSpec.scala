@@ -10,15 +10,21 @@ import scala.concurrent.duration._
 
 import helpers.AuthHelpers.requestWithSession
 import org.mockito.Mockito.when
+import play.api.mvc.{ControllerComponents}
+import action.AuthenticatedAction
+import scala.concurrent.ExecutionContext
+import mocks.MockAuthService
+import play.api.mvc.BodyParsers
 
-/** Add your spec here. You can mock out a whole application including requests, plugins etc.
-  *
-  * For more information, see
-  * https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
-  */
-class HomeControllerSpec extends UnitSpec:
+class HomeControllerSpec extends UnitSpec with MockAuthService:
 
-  val controller           = new HomeController(controllerComponents, authenticatedAction)
+  val cc = inject[ControllerComponents]
+  val bp = inject[BodyParsers.Default]
+  given ExecutionContext = cc.executionContext
+  
+  val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, bp)
+
+  val controller           = new HomeController(cc, mockAuthenticatedAction)
 
   val indexRequest = FakeRequest(GET, "/")
   val index        = controller.index().apply(indexRequest)
@@ -44,7 +50,7 @@ class HomeControllerSpec extends UnitSpec:
     "fail and redirect to log in page if user has a session-id in Cookies that cannot be found" in:
       val sessionId = UUID.randomUUID()
 
-      when(mockAuthService.getSession(sessionId)).thenReturn(None) // Mockito's default null breaks Option handling, so stub explicitly
+      when(mockAuthService.getSession(sessionId)).thenReturn(None)
 
       val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
       status(homePage) shouldBe SEE_OTHER
@@ -52,7 +58,7 @@ class HomeControllerSpec extends UnitSpec:
 
     "fail and redirect to log in page if user has a session-id in Cookies that has expired" in:
       val sessionId = UUID.randomUUID()
-      mockSession(sessionId, userId = 1L, expiresAt = Time.now - 30.minutes)
+      mockGetSession(sessionId, userId = 1L, expiresAt = Time.now - 30.minutes)
 
       val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
       status(homePage) shouldBe SEE_OTHER
@@ -60,7 +66,7 @@ class HomeControllerSpec extends UnitSpec:
 
     "render the home page when the session-id in Cookies is valid" in:
       val sessionId = UUID.randomUUID()
-      mockSession(sessionId, userId = 1L, expiresAt = Time.now + 30.minutes)
+      mockGetSession(sessionId, userId = 1L, expiresAt = Time.now + 30.minutes)
       
       val homePage = controller.home().apply(requestWithSession(Some(sessionId.toString)))
       status(homePage) shouldBe OK

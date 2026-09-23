@@ -28,13 +28,12 @@ class SignUpController @Inject() (authService: AuthService, val mcc: MessagesCon
           BadRequest(views.html.auth.signUp(formWithErrors))
         ,
         signUpData =>
-          logger.info("hit here")
           authService.createUser(signUpData.email, signUpData.password) match
             case Left(SignUpError.InvalidEmail(err)) =>
               Redirect(thisPage)
                 .flashing("error" -> err.message)
             case Left(SignUpError.EmailAlreadyUsed) =>
-              Redirect(thisPage)
+              Redirect(routes.LogInController.get())
                 .flashing("error" -> "That email already has an account, please log in instead")
             case Right(sessionId) =>
               Redirect(routes.HomeController.home())
