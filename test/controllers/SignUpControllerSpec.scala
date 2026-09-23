@@ -17,15 +17,22 @@ class SignUpControllerSpec extends UnitSpec with MockAuthService:
   "SignUpController" should: 
     val controller = new SignUpController(mockAuthService, mcc)
     val getRequest = FakeRequest(GET, "/auth/sign-up").withCSRFToken
-    def postRequest(email: String) = 
+    def postRequest(email: String, pw: String = "password", cpw: String = "password") = 
       FakeRequest(POST, "/auth/sign-up")
-        .withFormUrlEncodedBody("Email" -> email, "Password" -> "password", "Confirm Password" -> "password")
+        .withFormUrlEncodedBody("Email" -> email, "Password" -> pw, "Confirm Password" -> cpw)
         .withCSRFToken
 
     "render the sign up page" in {
       val result = controller.get().apply(getRequest)
       status(result) shouldBe 200
       contentType(result) shouldBe Some("text/html")
+    }
+
+    "fail and refresh with flash if email is empty" in {
+      val result = controller.submit().apply(postRequest(""))
+      status(result) shouldBe 400
+      contentType(result) shouldBe Some("text/html")
+      contentAsString(result) should include("This field is required")
     }
 
     "fail and refresh with flash if email is not valid" in {
