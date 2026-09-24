@@ -2,9 +2,11 @@ package action
 
 import play.api.mvc.*
 import play.api.mvc.Results.*
+import play.api.i18n.MessagesApi
 
 import models.Time
 import services.AuthService
+import controllers.routes.LogInController
 
 import java.util.UUID
 import javax.inject.Inject
@@ -16,15 +18,20 @@ trait UserAction
     extends ActionBuilder[UserRequest, AnyContent]
     with ActionRefiner[Request, UserRequest]
 
-class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyParsers.Default)(
-  using ExecutionContext,
+class AuthenticatedAction @Inject() (
+  authService: AuthService,
+  messagesApi: MessagesApi,
+  val parser: BodyParsers.Default,
+)(using
+  ExecutionContext,
 ) extends UserAction:
 
   protected def executionContext: ExecutionContext = summon[ExecutionContext]
   protected def refine[A](request: Request[A]): Future[Either[Result, UserRequest[A]]] =
     Future.successful {
 
-      val redirectToLogin = SeeOther(controllers.routes.LogInController.get().url)
+      val messagesRequest = MessagesRequest(request, messagesApi)
+      val redirectToLogin = SeeOther(LogInController.get().url)
 
       for
         cookie <- request.cookies
@@ -40,6 +47,6 @@ class AuthenticatedAction @Inject() (authService: AuthService, val parser: BodyP
           authService.keepAlive(session), // if session has not expired then keep alive
           redirectToLogin,
         )
-      yield UserRequest(session, request)
+      yield UserRequest(session, messagesRequest)
 
     }

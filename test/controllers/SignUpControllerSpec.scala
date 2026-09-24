@@ -1,18 +1,15 @@
 package controllers
 
-import play.api.mvc.MessagesControllerComponents
 import play.api.test.CSRFTokenHelper.*
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
 import models.errors.{ParseEmailError, SignUpError}
 
-import basespecs.UnitSpec
+import basespecs.ControllerSpec
 import mocks.MockAuthService
 
-class SignUpControllerSpec extends UnitSpec with MockAuthService:
-
-  val mcc = inject[MessagesControllerComponents]
+class SignUpControllerSpec extends ControllerSpec with MockAuthService:
 
   "SignUpController" should:
     val controller = new SignUpController(mockAuthService, mcc)

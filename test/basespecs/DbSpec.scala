@@ -1,10 +1,8 @@
 package basespecs
 
-import play.api.test.FakeRequest
-
-import action.UserRequest
 import implicits.Repository.*
 import models.db.Transactor
+import models.Session
 
 import data.FakeSessions
 import org.scalatest.BeforeAndAfterEach
@@ -12,8 +10,8 @@ import org.typelevel.doobie.implicits.toSqlInterpolator // sql"..."
 
 class DbSpec extends UnitSpec with BeforeAndAfterEach with FakeSessions:
 
-  lazy val xa: Transactor = inject[Transactor]
-  given Transactor        = xa
+  lazy val xa: Transactor            = inject[Transactor]
+  given Transactor                   = xa
 
   override def beforeEach(): Unit = truncateAll()
 
@@ -32,9 +30,6 @@ class DbSpec extends UnitSpec with BeforeAndAfterEach with FakeSessions:
         RETURNING id
     """.query[Long].unique.execute
 
-  def createUserRequest(): UserRequest[?] =
+  def createUserSession(): Session =
     val userId = insertTestUser()
-    UserRequest(
-      userSession = createSession(validSessionId, userId),
-      request = FakeRequest("GET", "/"),
-    )
+    createSession(validSessionId, userId)

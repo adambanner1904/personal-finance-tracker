@@ -3,7 +3,7 @@ package controllers
 import play.api.Logging
 import play.api.mvc.*
 
-import forms.*
+import forms.auth.*
 import models.errors.LoginError.*
 import services.AuthService
 

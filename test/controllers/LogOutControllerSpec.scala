@@ -1,16 +1,14 @@
 package controllers
 
-import play.api.mvc.MessagesControllerComponents
 import play.api.test.Helpers.*
 
-import basespecs.UnitSpec
+import basespecs.ControllerSpec
 import data.FakeSessions
 import helpers.AuthHelpers.requestWithSession
 import mocks.{FakeAuthenticatedAction, MockAuthService}
 
-class LogOutControllerSpec extends UnitSpec with MockAuthService with FakeSessions:
+class LogOutControllerSpec extends ControllerSpec with MockAuthService with FakeSessions:
 
-  val mcc                     = inject[MessagesControllerComponents]
   val fakeAuthenticatedAction = new FakeAuthenticatedAction(Some(validSession))
 
   val controller  = new LogOutController(mcc, fakeAuthenticatedAction, mockAuthService)

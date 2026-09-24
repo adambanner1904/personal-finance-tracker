@@ -1,6 +1,5 @@
 package controllers
 
-import play.api.mvc.{BodyParsers, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
@@ -11,19 +10,16 @@ import java.util.UUID
 
 import scala.concurrent.duration.*
 
-import basespecs.UnitSpec
+import basespecs.ControllerSpec
 import helpers.AuthHelpers.requestWithSession
 import mocks.MockAuthService
 import org.mockito.Mockito.when
 
-class HomeControllerSpec extends UnitSpec with MockAuthService:
+class HomeControllerSpec extends ControllerSpec with MockAuthService:
 
-  val cc = inject[ControllerComponents]
-  val bp = inject[BodyParsers.Default]
+  val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, messagesApi, bp)
 
-  val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, bp)
-
-  val controller = new HomeController(cc, mockAuthenticatedAction)
+  val controller = new HomeController(mcc, mockAuthenticatedAction)
 
   val indexRequest = FakeRequest(GET, "/")
   val index        = controller.index().apply(indexRequest)

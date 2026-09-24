@@ -1,0 +1,20 @@
+@import play.api.data.Form
+@import play.api.mvc.Flash
+@import views.html.helper._
+@import forms.institutions.AddInstitutionData
+@import play.api.mvc.MessagesRequestHeader
+
+@(institutionForm: Form[AddInstitutionData])(implicit request: MessagesRequestHeader, flash: Flash)
+
+@layout.authenticated("Create Institution") {
+  <div class="page-header">
+    <h1>Create Institution</h1>
+  </div>
+
+  @form(action = routes.AddInstitutionController.post(), Symbol("class") -> "form-section") {
+    @CSRF.formField
+    @inputText(institutionForm("name"), Symbol("class") -> "form-field", Symbol("maxlength") -> "300")
+    <input type="submit" value="Submit">
+  }
+
+}
