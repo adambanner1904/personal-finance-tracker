@@ -1,0 +1,45 @@
+@import models.Institution
+
+@(institutions: List[Institution])(implicit flash: Flash)
+
+@layout.authenticated("Institutions") {
+  <div class="page-header">
+    <h1>Institutions</h1>
+    <div class="actions">
+      @* TODO: replace href="#" with routes.AddInstitutionController.get() once that page/route exists *@
+      <a class="button button-primary" href="#">Add institution</a>
+      @* TODO: replace href="#" with routes.ArchivedInstitutionsController.get() once that page/route exists *@
+      <a class="button button-secondary" href="#">Archived institutions</a>
+    </div>
+  </div>
+
+  @if(institutions.isEmpty) {
+    <p class="empty-state">You don't have any active institutions yet.</p>
+  } else {
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for(institution <- institutions) {
+            <tr>
+              <td>@institution.name</td>
+              <td>
+                <div class="actions">
+                  @* TODO: replace href="#" with routes.RenameInstitutionController.get(institution.id) once that action exists *@
+                  <a class="button button-secondary" href="#">Rename</a>
+                  @* TODO: replace href="#" with routes.ArchiveInstitutionController.post(institution.id) once that action exists *@
+                  <a class="button button-secondary" href="#">Archive</a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+}

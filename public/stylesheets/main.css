@@ -234,6 +234,24 @@ textarea:focus-visible {
   gap: var(--space-4);
 }
 
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.empty-state {
+  color: var(--text-muted);
+  padding: var(--space-5);
+  background: var(--surface);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+
 .row {
   display: flex;
   align-items: center;
