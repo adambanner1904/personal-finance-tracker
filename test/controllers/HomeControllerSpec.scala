@@ -1,9 +1,6 @@
 package controllers
 
-import play.api.mvc.{
-  BodyParsers,
-  ControllerComponents
-}
+import play.api.mvc.{BodyParsers, ControllerComponents}
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 
@@ -23,10 +20,10 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
 
   val cc = inject[ControllerComponents]
   val bp = inject[BodyParsers.Default]
-  
+
   val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, bp)
 
-  val controller           = new HomeController(cc, mockAuthenticatedAction)
+  val controller = new HomeController(cc, mockAuthenticatedAction)
 
   val indexRequest = FakeRequest(GET, "/")
   val index        = controller.index().apply(indexRequest)
@@ -37,7 +34,6 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
       contentType(index) shouldBe Some("text/html")
       contentAsString(index) should include("Welcome to Play")
 
-      
   "HomeController GET /home" should:
     def getHomePage(sessionId: Option[String]) =
       controller.home().apply(requestWithSession(GET, "/home", sessionId))
@@ -71,7 +67,7 @@ class HomeControllerSpec extends UnitSpec with MockAuthService:
     "render the home page when the session-id in Cookies is valid" in:
       val sessionId = UUID.randomUUID()
       mockGetSession(sessionId, userId = 1L, expiresAt = Time.now + 30.minutes)
-      
+
       val homePage = getHomePage(Some(sessionId.toString))
       status(homePage) shouldBe OK
       contentType(homePage) shouldBe Some("text/html")

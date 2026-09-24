@@ -1,7 +1,6 @@
 package mocks
 
-
-import models.errors.{SignUpError, LoginError}
+import models.errors.{LoginError, SignUpError}
 import models.{Session, Time}
 import services.AuthService
 
@@ -18,8 +17,12 @@ trait MockAuthService extends MockitoSugar:
     val session = Session(sessionId, userId, createdAt = Time.now, expiresAt = expiresAt)
     when(mockAuthService.getSession(sessionId)).thenReturn(Some(session))
 
-  def mockCreateUser(email: String, password: String = "password")(toReturn: Either[SignUpError, UUID]): Unit =
+  def mockCreateUser(email: String, password: String = "password")(
+    toReturn: Either[SignUpError, UUID],
+  ): Unit =
     when(mockAuthService.createUser(email, password)).thenReturn(toReturn)
 
-  def mockLoginUser(email: String, password: String = "password")(toReturn: Either[LoginError, UUID]): Unit =
+  def mockLoginUser(email: String, password: String = "password")(
+    toReturn: Either[LoginError, UUID],
+  ): Unit =
     when(mockAuthService.loginUser(email, password)).thenReturn(toReturn)

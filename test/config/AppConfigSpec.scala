@@ -7,6 +7,5 @@ class AppConfigSpec extends basespecs.UnitSpec:
     "load the configuration" in:
       val config = inject[AppConfig]
       config should not be null
-      config.sessionTimeToLive shouldBe a [scala.concurrent.duration.FiniteDuration]
+      config.sessionTimeToLive shouldBe a[scala.concurrent.duration.FiniteDuration]
       config.sessionTimeToLive shouldBe 30.minutes
-      

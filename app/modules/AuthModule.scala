@@ -1,7 +1,8 @@
 package modules
 
-import com.google.inject.AbstractModule
 import action.{AuthenticatedAction, UserAction}
+
+import com.google.inject.AbstractModule
 
 class AuthModule extends AbstractModule:
   override def configure(): Unit =

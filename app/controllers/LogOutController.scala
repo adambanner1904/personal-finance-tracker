@@ -2,7 +2,7 @@ package controllers
 
 import play.api.mvc.*
 
-import action.{UserRequest, UserAction}
+import action.{UserAction, UserRequest}
 import services.AuthService
 
 import javax.inject.{Inject, Singleton}

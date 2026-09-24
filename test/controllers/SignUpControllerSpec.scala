@@ -14,10 +14,10 @@ class SignUpControllerSpec extends UnitSpec with MockAuthService:
 
   val mcc = inject[MessagesControllerComponents]
 
-  "SignUpController" should: 
+  "SignUpController" should:
     val controller = new SignUpController(mockAuthService, mcc)
     val getRequest = FakeRequest(GET, "/auth/sign-up").withCSRFToken
-    def postRequest(email: String, pw: String = "password", cpw: String = "password") = 
+    def postRequest(email: String, pw: String = "password", cpw: String = "password") =
       FakeRequest(POST, "/auth/sign-up")
         .withFormUrlEncodedBody("Email" -> email, "Password" -> pw, "Confirm Password" -> cpw)
         .withCSRFToken
@@ -37,7 +37,9 @@ class SignUpControllerSpec extends UnitSpec with MockAuthService:
 
     "fail and refresh with flash if email is not valid" in {
       val invalidEmail = "invalid-email"
-      mockCreateUser(invalidEmail)(Left(SignUpError.InvalidEmail(ParseEmailError.InvalidEmailFormat)))
+      mockCreateUser(invalidEmail)(
+        Left(SignUpError.InvalidEmail(ParseEmailError.InvalidEmailFormat)),
+      )
       val result = controller.submit().apply(postRequest(invalidEmail))
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SignUpController.get().url)
@@ -47,21 +49,23 @@ class SignUpControllerSpec extends UnitSpec with MockAuthService:
     "fail and redirect to log in page if email is already used" in {
       val testEmail = "test@gmail.com"
       mockCreateUser(testEmail)(Left(SignUpError.EmailAlreadyUsed))
-      
+
       val result = controller.submit().apply(postRequest(testEmail))
       status(result) shouldBe 303
       redirectLocation(result) shouldBe Some(routes.LogInController.get().url)
-      flash(result).get("error") shouldBe Some("That email already has an account, please log in instead")
+      flash(result).get("error") shouldBe Some(
+        "That email already has an account, please log in instead",
+      )
     }
 
     "reredirect to home page if sign up is successful" in {
       val validEmail = "test@gmail.com"
-      val sessionId = java.util.UUID.randomUUID()
+      val sessionId  = java.util.UUID.randomUUID()
       mockCreateUser(validEmail)(Right(sessionId))
 
       val result = controller.submit().apply(postRequest(validEmail))
       status(result) shouldBe 303
-      redirectLocation(result) shouldBe Some(routes.HomeController.home().url)     
+      redirectLocation(result) shouldBe Some(routes.HomeController.home().url)
       flash(result).get("success") shouldBe Some("User account has been created.")
       cookies(result).get("session-id").map(_.value) shouldBe Some(sessionId.toString)
     }

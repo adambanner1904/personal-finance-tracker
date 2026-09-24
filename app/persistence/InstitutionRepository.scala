@@ -1,29 +1,48 @@
 package persistence
 
-import org.typelevel.doobie.ConnectionIO
 import action.UserRequest
 import models.{Institution, Time}
+
+import javax.inject.{Inject, Singleton}
+
+import org.typelevel.doobie.ConnectionIO
 import org.typelevel.doobie.implicits.*
 
-
-@javax.inject.Singleton
-class InstitutionRepository @javax.inject.Inject(): 
-  def getAllInstitutions()(using request: UserRequest[?]): ConnectionIO[List[Institution]] = 
-    sql"select * from institutions where user_id = ${request.userSession.userId}"
+@Singleton
+class InstitutionRepository @Inject():
+  def getAllInstitutions()(using request: UserRequest[?]): ConnectionIO[List[Institution]] =
+    sql"""
+        select * 
+        from institutions 
+        where user_id = ${request.userSession.userId}
+    """
       .query[Institution]
       .to[List]
 
-  def findInstitutionById(id: Long)(using request: UserRequest[?]): ConnectionIO[Option[Institution]] = 
-    sql"select * from institutions where id = ${id} and user_id = ${request.userSession.userId}"
+  def findInstitutionById(
+    id: Long,
+  )(using request: UserRequest[?]): ConnectionIO[Option[Institution]] =
+    sql"""
+        select * 
+        from institutions 
+        where id = ${id} 
+          and user_id = ${request.userSession.userId}
+    """
       .query[Institution]
       .option
 
-  def insertInstitution(name: String)(using request: UserRequest[?]): ConnectionIO[Long] = 
-    sql"insert into institutions (user_id, name) values (${request.userSession.userId}, ${name})"
-      .update
-      .withUniqueGeneratedKeys[Long]("id")
+  def insertInstitution(name: String)(using request: UserRequest[?]): ConnectionIO[Long] =
+    sql"""
+        insert into institutions (user_id, name) 
+        values (${request.userSession.userId}, ${name})
+        returning id
+    """
+      .query[Long]
+      .unique
 
-  def archiveInstitution(institutionId: Long, archivedAt: Time)(using request: UserRequest[?]): ConnectionIO[Long] = 
+  def archiveInstitution(institutionId: Long, archivedAt: Time)(using
+    request: UserRequest[?],
+  ): ConnectionIO[Long] =
     sql"""
         update institutions set archived_at = ${archivedAt} 
         where id = ${institutionId} 
@@ -33,7 +52,7 @@ class InstitutionRepository @javax.inject.Inject():
       .query[Long]
       .unique
 
-  def unarchiveInstitution(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Long] = 
+  def unarchiveInstitution(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Long] =
     sql"""
         update institutions set archived_at = null 
         where id = ${institutionId} 
@@ -42,4 +61,3 @@ class InstitutionRepository @javax.inject.Inject():
     """
       .query[Long]
       .unique
-  

@@ -1,26 +1,26 @@
 package controllers
 
-import play.api.test.*
-import play.api.test.Helpers.*
-import play.api.test.CSRFTokenHelper.*
 import play.api.mvc.MessagesControllerComponents
+import play.api.test.*
+import play.api.test.CSRFTokenHelper.*
+import play.api.test.Helpers.*
+
+import models.errors.{LoginError, ParseEmailError}
 
 import basespecs.UnitSpec
 import mocks.MockAuthService
 
-import models.errors.{LoginError, ParseEmailError}
-
 class LogInControllerSpec extends UnitSpec with MockAuthService:
 
-  val mcc = inject[MessagesControllerComponents]
+  val mcc        = inject[MessagesControllerComponents]
   val controller = new LogInController(mockAuthService, mcc)
   val getRequest = FakeRequest(routes.LogInController.get()).withCSRFToken
-  
-  def postRequest(email: String, pw: String = "password") = 
+
+  def postRequest(email: String, pw: String = "password") =
     FakeRequest(routes.LogInController.submit())
       .withFormUrlEncodedBody("Email" -> email, "Password" -> pw)
       .withCSRFToken
-  
+
   "LogInController" should:
     "return 200 OK for GET /login" in {
       val result = controller.get()(getRequest)
@@ -36,8 +36,10 @@ class LogInControllerSpec extends UnitSpec with MockAuthService:
 
     "fail and refresh with flash if email is not valid" in {
       val invalidEmail = "invalid-email"
-      mockLoginUser(invalidEmail, "password")(Left(LoginError.InvalidEmail(ParseEmailError.InvalidEmailFormat)))
-      
+      mockLoginUser(invalidEmail, "password")(
+        Left(LoginError.InvalidEmail(ParseEmailError.InvalidEmailFormat)),
+      )
+
       val result = controller.submit()(postRequest(invalidEmail))
       status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.LogInController.get().url)
@@ -56,7 +58,7 @@ class LogInControllerSpec extends UnitSpec with MockAuthService:
 
     "redirect to home page if login is successful" in {
       val validEmail = "test@gmail.com"
-      val sessionId = java.util.UUID.randomUUID()
+      val sessionId  = java.util.UUID.randomUUID()
       mockLoginUser(validEmail, "password")(Right(sessionId))
 
       val result = controller.submit()(postRequest(validEmail, "password"))
