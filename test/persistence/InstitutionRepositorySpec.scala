@@ -48,6 +48,20 @@ class InstitutionRepositorySpec extends DbSpec:
       result.length shouldBe 2
       result.map(_.name) should contain allOf ("Institution 1", "Institution 2")
     }
+
+    "return a list sorted by name" in {
+      val request = createUserRequest()
+
+      val program = for
+        _            <- institutionRepo.insert("Z Institution")(using request)
+        _            <- institutionRepo.insert("A Institution")(using request)
+        _            <- institutionRepo.insert("M Institution")(using request)
+        institutions <- institutionRepo.list()(using request)
+      yield institutions
+
+      val result = program.execute
+      result.map(_.name) shouldBe List("A Institution", "M Institution", "Z Institution")
+    }
   }
 
   "Archiving an institution" should {
@@ -55,12 +69,9 @@ class InstitutionRepositorySpec extends DbSpec:
       val request = createUserRequest()
 
       val institutionId = insertInstitution("To Archive")(using request)
-      val archivedAt    = Time.now
-      val updatedId     = institutionRepo
-        .archive(institutionId, archivedAt)(using request)
+      val archivedAt     = institutionRepo
+        .archive(institutionId)(using request)
         .execute
-
-      updatedId shouldBe institutionId
 
       val result = institutionRepo
         .findById(institutionId)(using request)
@@ -75,9 +86,8 @@ class InstitutionRepositorySpec extends DbSpec:
       val request = createUserRequest()
 
       val institutionId = insertInstitution("To Dearchive")(using request)
-      val archivedAt    = Time.now
-      val archivedId    = institutionRepo
-        .archive(institutionId, archivedAt)(using request)
+      val archivedAt    = institutionRepo
+        .archive(institutionId)(using request)
         .execute
 
       val archived = institutionRepo
@@ -97,6 +107,25 @@ class InstitutionRepositorySpec extends DbSpec:
         .execute
         .value
       result.archivedAt shouldBe None
+    }
+  }
+
+  "Renaming an institution" should {
+    "update the name field" in {
+      val request = createUserRequest()
+
+      val institutionId = insertInstitution("Old Name")(using request)
+      val renamedId      = institutionRepo
+        .rename(institutionId, "New Name")(using request)
+        .execute
+
+      renamedId shouldBe institutionId
+
+      val result = institutionRepo
+        .findById(renamedId)(using request)
+        .execute
+        .value
+      result.name shouldBe "New Name"
     }
   }
 

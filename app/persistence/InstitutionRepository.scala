@@ -15,42 +15,31 @@ class InstitutionRepository @Inject():
         select * 
         from institutions 
         where user_id = ${request.userSession.userId}
-    """
-      .query[Institution]
-      .to[List]
+        order by name
+    """.query[Institution].to[List]
 
-  def findById(
-    id: Long,
-  )(using request: UserRequest[?]): ConnectionIO[Option[Institution]] =
+  def findById(id: Long)(using request: UserRequest[?]): ConnectionIO[Option[Institution]] =
     sql"""
         select * 
         from institutions 
         where id = ${id} 
           and user_id = ${request.userSession.userId}
-    """
-      .query[Institution]
-      .option
+    """.query[Institution].option
 
   def insert(name: String)(using request: UserRequest[?]): ConnectionIO[Long] =
     sql"""
         insert into institutions (user_id, name) 
         values (${request.userSession.userId}, ${name})
         returning id
-    """
-      .query[Long]
-      .unique
+    """.query[Long].unique
 
-  def archive(institutionId: Long, archivedAt: Time)(using
-    request: UserRequest[?],
-  ): ConnectionIO[Long] =
+  def archive(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Time] =
     sql"""
-        update institutions set archived_at = ${archivedAt} 
+        update institutions set archived_at = ${Time.now} 
         where id = ${institutionId} 
           and user_id = ${request.userSession.userId}
-        returning id
-    """
-      .query[Long]
-      .unique
+        returning archived_at
+    """.query[Time].unique
 
   def unarchive(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Long] =
     sql"""
@@ -58,6 +47,12 @@ class InstitutionRepository @Inject():
         where id = ${institutionId} 
         and user_id = ${request.userSession.userId}
         returning id 
-    """
-      .query[Long]
-      .unique
+    """.query[Long].unique
+
+  def rename(institutionId: Long, newName: String)(using request: UserRequest[?]): ConnectionIO[Long] =
+    sql"""
+        update institutions set name = ${newName} 
+        where id = ${institutionId} 
+          and user_id = ${request.userSession.userId}
+        returning id
+    """.query[Long].unique
