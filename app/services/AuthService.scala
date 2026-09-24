@@ -28,27 +28,27 @@ class AuthService @Inject() (
     for
       validEmail <- EmailAddress.from(email).left.map(SignUpError.InvalidEmail(_))
       userId     <- userRepo
-        .insertUser(validEmail, hash(password))
+        .insert(validEmail, hash(password))
         .transact(xa)
         .unsafeRunSync()
       sessionId = sessionRepo
-        .createSession(userId)
+        .insert(userId)
         .transact(xa)
         .unsafeRunSync()
     yield sessionId
 
   // Can be None if not present in table
   def getSession(sessionId: UUID): Option[Session] =
-    sessionRepo.getSession(sessionId).transact(xa).unsafeRunSync()
+    sessionRepo.findById(sessionId).transact(xa).unsafeRunSync()
 
   def deleteSession(sessionId: UUID): Unit =
-    sessionRepo.deleteSession(sessionId).transact(xa).unsafeRunSync()
+    sessionRepo.deleteById(sessionId).transact(xa).unsafeRunSync()
 
   def loginUser(email: String, password: String): Either[LoginError, UUID] =
     for
       validEmail <- EmailAddress.from(email).left.map(LoginError.InvalidEmail(_))
       user       <- userRepo
-        .loadUser(validEmail)
+        .findByEmail(validEmail)
         .transact(xa)
         .unsafeRunSync()
         .toRight(LoginError.InvalidCredentials)
@@ -58,14 +58,14 @@ class AuthService @Inject() (
         LoginError.InvalidCredentials,
       )
       sessionId = sessionRepo
-        .createSession(user.id)
+        .insert(user.id)
         .transact(xa)
         .unsafeRunSync()
     yield sessionId
 
   def keepAlive(session: Session): Unit =
     if session.expiresAt - Time.now <= 5.minutes
-    then sessionRepo.updateSession(session.sessionId)(Time.now + appConfig.sessionTimeToLive)
+    then sessionRepo.updateExpiryTime(session.sessionId)(Time.now + appConfig.sessionTimeToLive)
 
 object AuthService:
 

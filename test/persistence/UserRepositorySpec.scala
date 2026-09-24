@@ -16,7 +16,7 @@ class UserRepositorySpec extends DbSpec:
 
   private def insertTestUser(email: EmailAddress, pw: String) =
     testRepository
-      .insertUser(testEmail, testPasswordHash)
+      .insert(testEmail, testPasswordHash)
       .transact(xa)
       .unsafeRunSync()
 

@@ -10,7 +10,7 @@ import org.typelevel.doobie.implicits.*
 
 @Singleton
 class InstitutionRepository @Inject():
-  def getAllInstitutions()(using request: UserRequest[?]): ConnectionIO[List[Institution]] =
+  def list()(using request: UserRequest[?]): ConnectionIO[List[Institution]] =
     sql"""
         select * 
         from institutions 
@@ -19,7 +19,7 @@ class InstitutionRepository @Inject():
       .query[Institution]
       .to[List]
 
-  def findInstitutionById(
+  def findById(
     id: Long,
   )(using request: UserRequest[?]): ConnectionIO[Option[Institution]] =
     sql"""
@@ -31,7 +31,7 @@ class InstitutionRepository @Inject():
       .query[Institution]
       .option
 
-  def insertInstitution(name: String)(using request: UserRequest[?]): ConnectionIO[Long] =
+  def insert(name: String)(using request: UserRequest[?]): ConnectionIO[Long] =
     sql"""
         insert into institutions (user_id, name) 
         values (${request.userSession.userId}, ${name})
@@ -40,7 +40,7 @@ class InstitutionRepository @Inject():
       .query[Long]
       .unique
 
-  def archiveInstitution(institutionId: Long, archivedAt: Time)(using
+  def archive(institutionId: Long, archivedAt: Time)(using
     request: UserRequest[?],
   ): ConnectionIO[Long] =
     sql"""
@@ -52,7 +52,7 @@ class InstitutionRepository @Inject():
       .query[Long]
       .unique
 
-  def unarchiveInstitution(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Long] =
+  def unarchive(institutionId: Long)(using request: UserRequest[?]): ConnectionIO[Long] =
     sql"""
         update institutions set archived_at = null 
         where id = ${institutionId} 

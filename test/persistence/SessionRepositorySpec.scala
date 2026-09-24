@@ -21,7 +21,7 @@ class SessionRepositorySpec extends DbSpec:
       .value
 
   private def makeSession(id: Long): UUID =
-    testRepo.createSession(id).transact(xa).unsafeRunSync()
+    testRepo.insert(id).transact(xa).unsafeRunSync()
 
   "SessionRepository" should:
     "create a session" in:

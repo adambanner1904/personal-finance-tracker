@@ -26,7 +26,7 @@ class InstitutionRepositorySpec extends DbSpec with FakeSessions:
 
       val institutionId = insertInstitution("Test Institution")(using request)
       val result        = institutionRepo
-        .findInstitutionById(institutionId)(using request)
+        .findById(institutionId)(using request)
         .transact(xa)
         .unsafeRunSync()
         .value
@@ -38,7 +38,7 @@ class InstitutionRepositorySpec extends DbSpec with FakeSessions:
       val request = setupTestData()
 
       val result =
-        institutionRepo.findInstitutionById(999)(using request).transact(xa).unsafeRunSync()
+        institutionRepo.findById(999)(using request).transact(xa).unsafeRunSync()
       result shouldBe None
     }
   }
@@ -73,7 +73,7 @@ class InstitutionRepositorySpec extends DbSpec with FakeSessions:
       updatedId shouldBe institutionId
 
       val result = institutionRepo
-        .findInstitutionById(institutionId)(using request)
+        .findById(institutionId)(using request)
         .transact(xa)
         .unsafeRunSync()
         .value
@@ -93,7 +93,7 @@ class InstitutionRepositorySpec extends DbSpec with FakeSessions:
         .unsafeRunSync()
 
       val archived = institutionRepo
-        .findInstitutionById(institutionId)(using request)
+        .findById(institutionId)(using request)
         .transact(xa)
         .unsafeRunSync()
         .value
@@ -107,7 +107,7 @@ class InstitutionRepositorySpec extends DbSpec with FakeSessions:
       unarchivedId shouldBe institutionId
 
       val result = institutionRepo
-        .findInstitutionById(unarchivedId)(using request)
+        .findById(unarchivedId)(using request)
         .transact(xa)
         .unsafeRunSync()
         .value

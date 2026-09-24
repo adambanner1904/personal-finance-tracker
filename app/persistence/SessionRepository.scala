@@ -12,7 +12,7 @@ import org.typelevel.doobie.postgres.implicits.*
 
 @javax.inject.Singleton
 class SessionRepository:
-  def createSession(userId: Long): ConnectionIO[UUID] =
+  def insert(userId: Long): ConnectionIO[UUID] =
     sql"""
         insert into user_sessions (user_id, expires_at) 
         values ($userId, ${Time.now + 30.minutes})
@@ -21,7 +21,7 @@ class SessionRepository:
       .query[UUID]
       .unique
 
-  def getSession(sessionId: UUID): ConnectionIO[Option[Session]] =
+  def findById(sessionId: UUID): ConnectionIO[Option[Session]] =
     sql"""
         select * 
         from user_sessions 
@@ -30,7 +30,7 @@ class SessionRepository:
       .query[Session]
       .option
 
-  def updateSession(sessionId: UUID)(newExpiryTime: Time): ConnectionIO[Unit] =
+  def updateExpiryTime(sessionId: UUID)(newExpiryTime: Time): ConnectionIO[Unit] =
     sql"""
         update user_sessions 
         set expires_at = $newExpiryTime 
@@ -40,7 +40,7 @@ class SessionRepository:
       .run
       .map(_ => ())
 
-  def deleteSession(sessionId: UUID): ConnectionIO[Unit] =
+  def deleteById(sessionId: UUID): ConnectionIO[Unit] =
     sql"""
         delete from user_sessions 
         where session_id = $sessionId

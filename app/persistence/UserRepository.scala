@@ -9,7 +9,7 @@ import org.typelevel.doobie.postgres.*
 
 class UserRepository:
 
-  def insertUser(
+  def insert(
     email: EmailAddress,
     passwordHash: String,
   ): ConnectionIO[Either[SignUpError, Long]] =
@@ -22,7 +22,7 @@ class UserRepository:
       .attemptSomeSqlState:
         case sqlstate.class23.UNIQUE_VIOLATION => SignUpError.EmailAlreadyUsed
 
-  def loadUser(email: EmailAddress): ConnectionIO[Option[User]] =
+  def findByEmail(email: EmailAddress): ConnectionIO[Option[User]] =
     sql"""
         select * from users 
         where email = ${email.value}
