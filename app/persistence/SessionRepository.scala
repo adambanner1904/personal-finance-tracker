@@ -35,16 +35,12 @@ class SessionRepository:
         update user_sessions 
         set expires_at = $newExpiryTime 
         where session_id = $sessionId
-    """
-      .update
-      .run
+    """.update.run
       .map(_ => ())
 
   def deleteById(sessionId: UUID): ConnectionIO[Unit] =
     sql"""
         delete from user_sessions 
         where session_id = $sessionId
-    """
-      .update
-      .run
+    """.update.run
       .map(_ => ())

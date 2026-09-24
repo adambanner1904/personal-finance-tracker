@@ -1,54 +1,50 @@
 package persistence
 
+import implicits.Repository.*
 import models.*
 
 import java.time.Instant
 import java.util.UUID
 
 import basespecs.DbSpec
-import org.typelevel.doobie.implicits.*
 
 class SessionRepositorySpec extends DbSpec:
 
-  lazy val userRepo: UserRepository    = inject[UserRepository]
-  lazy val testRepo: SessionRepository = inject[SessionRepository]
-
-  private def createUser(): Long =
-    userRepo
-      .insertUser(EmailAddress.unsafeFrom("test2@gmail.com"), "123")
-      .transact(xa)
-      .unsafeRunSync()
-      .value
+  lazy val sessionRepo: SessionRepository = inject[SessionRepository]
 
   private def makeSession(id: Long): UUID =
-    testRepo.insert(id).transact(xa).unsafeRunSync()
+    sessionRepo.insert(id).execute
 
   "SessionRepository" should:
-    "create a session" in:
-      val userId    = createUser()
+    "create a session" in {
+      val userId    = insertTestUser()
       val sessionId = makeSession(userId)
       sessionId shouldBe a[UUID]
+    }
 
-    "get a session" in:
-      val userId    = createUser()
+    "get a session" in {
+      val userId    = insertTestUser()
       val sessionId = makeSession(userId)
-      val session   = testRepo.getSession(sessionId).transact(xa).unsafeRunSync().value
+      val session   = sessionRepo.findById(sessionId).execute.value
       session.userId shouldBe userId
+    }
 
-    "update a session" in:
-      val userId    = createUser()
+    "update a session" in {
+      val userId    = insertTestUser()
       val sessionId = makeSession(userId)
       val newTime   = Time.unsafeFrom(Instant.parse("1970-01-01T00:02:02Z"))
-      testRepo.updateSession(sessionId)(newTime).transact(xa).unsafeRunSync()
-      val updatedSession: Session =
-        testRepo.getSession(sessionId).transact(xa).unsafeRunSync().value
+
+      sessionRepo.updateExpiryTime(sessionId)(newTime).execute
+
+      val updatedSession: Session = sessionRepo.findById(sessionId).execute.value
       updatedSession.expiresAt shouldBe newTime
+    }
 
     "delete a session" in {
-      val userId    = createUser()
+      val userId    = insertTestUser()
       val sessionId = makeSession(userId)
-      testRepo.deleteSession(sessionId).transact(xa).unsafeRunSync()
-      val deletedSession = testRepo.getSession(sessionId).transact(xa).unsafeRunSync()
+      sessionRepo.deleteById(sessionId).execute
+      val deletedSession = sessionRepo.findById(sessionId).execute
 
       deletedSession shouldBe None
     }

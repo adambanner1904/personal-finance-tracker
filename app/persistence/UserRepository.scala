@@ -17,7 +17,8 @@ class UserRepository:
         insert into users (email, password_hash) 
         values (${email.value}, $passwordHash)
         returning id
-    """.query[Long]
+    """
+      .query[Long]
       .unique
       .attemptSomeSqlState:
         case sqlstate.class23.UNIQUE_VIOLATION => SignUpError.EmailAlreadyUsed
