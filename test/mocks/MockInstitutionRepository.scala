@@ -15,3 +15,6 @@ trait MockInstitutionRepository extends MockitoSugar:
 
   def mockInsert(name: String)(using session: Session): Unit =
     when(mockInstitutionRepo.insert(name)).thenReturn(pure(()))
+
+  def mockList(institutions: Institution*)(using session: Session): Unit =
+    when(mockInstitutionRepo.list()).thenReturn(pure(institutions.toList))

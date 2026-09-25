@@ -14,6 +14,11 @@ class InstitutionService @Inject (implicit
   val xa: Transactor,
   institutionRepo: InstitutionRepository,
 ):
+  def listInstitutions()(using
+    session: Session,
+  ): List[String] =
+    institutionRepo.list().execute.map(_.name)
+    
   def addInstitution(name: String)(using
     session: Session,
   ): Either[AddInstitutionError, Unit] =

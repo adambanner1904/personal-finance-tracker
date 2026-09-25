@@ -11,3 +11,12 @@ trait FakeInstitutions:
     createdAt = Time.now,
     updatedAt = Time.now,
   )
+
+  val starling = Institution(
+    id = 2L,
+    userId = 1L,
+    name = "Starling",
+    archivedAt = None,
+    createdAt = Time.now,
+    updatedAt = Time.now,
+  )

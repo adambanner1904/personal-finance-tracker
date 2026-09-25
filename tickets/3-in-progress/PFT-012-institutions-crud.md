@@ -15,9 +15,9 @@ Institutions are the grouping layer that makes multiple accounts per provider po
 
 ## Tasks
 
-- [ ] Institution repository: list by user, find by id+user, insert, update
-- [ ] `GET /institutions` list page showing name and account count
-- [ ] `GET/POST /institutions/new` create form
+- [x] Institution repository: list by user, find by id+user, insert, update
+- [x] `GET /institutions` list page showing name and account count
+- [x] `GET/POST /institutions/new` create form
 - [ ] `GET/POST /institutions/:id/edit` edit form
 - [ ] Validate name: required, trimmed, sensible max length, unique per user
 - [ ] Empty state on the list page pointing to "add your first institution"

@@ -1,6 +1,4 @@
-@import models.Institution
-
-@(institutions: List[Institution])(implicit flash: Flash)
+@(institutions: List[String])(implicit flash: Flash)
 
 @layout.authenticated("Institutions") {
   <div class="page-header">
@@ -26,7 +24,7 @@
         <tbody>
           @for(institution <- institutions) {
             <tr>
-              <td>@institution.name</td>
+              <td>@institution</td>
               <td>
                 <div class="actions">
                   @* TODO: replace href="#" with routes.RenameInstitutionController.get(institution.id) once that action exists *@

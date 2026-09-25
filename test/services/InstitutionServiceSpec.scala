@@ -32,3 +32,10 @@ class InstitutionServiceSpec
       val result = institutionService.addInstitution(name)
       result shouldBe Right(())
     }
+
+    "return a list of names of all institutions" in {
+      mockList(halifax, starling)
+
+      val result = institutionService.listInstitutions()
+      result shouldBe List(halifax.name, starling.name)
+    }
