@@ -1,6 +1,6 @@
 package persistence
 
-import models.{Institution, Session, Time}
+import models.{Institution, Time}
 
 import javax.inject.{Inject, Singleton}
 
@@ -9,57 +9,58 @@ import org.typelevel.doobie.implicits.*
 
 @Singleton
 class InstitutionRepository @Inject():
-  def list()(using session: Session): ConnectionIO[List[Institution]] =
+  
+  def list(userId: Long): ConnectionIO[List[Institution]] =
     sql"""
         select * 
         from institutions 
-        where user_id = ${session.userId}
+        where user_id = $userId
         order by name
     """.query[Institution].to[List]
 
-  def findById(id: Long)(using session: Session): ConnectionIO[Option[Institution]] =
+  def findById(id: Long, userId: Long): ConnectionIO[Option[Institution]] =
     sql"""
         select * 
         from institutions 
         where id = $id
-          and user_id = ${session.userId}
+          and user_id = $userId
     """.query[Institution].option
     
-  def findByName(name: String)(using session: Session): ConnectionIO[Option[Institution]] =
+  def findByName(name: String, userId: Long): ConnectionIO[Option[Institution]] =
     sql"""
         select * 
         from institutions 
         where name = $name
-          and user_id = ${session.userId}
+          and user_id = $userId
     """.query[Institution].option
     
-  def insert(name: String)(using session: Session): ConnectionIO[Long] =
+  def insert(name: String, userId: Long): ConnectionIO[Long] =
     sql"""
         insert into institutions (user_id, name) 
-        values (${session.userId}, ${name})
+        values ($userId, $name)
         returning id
     """.query[Long].unique
 
-  def archive(institutionId: Long)(using session: Session): ConnectionIO[Time] =
+  def archive(institutionId: Long, userId: Long): ConnectionIO[Time] =
     sql"""
         update institutions set archived_at = ${Time.now} 
-        where id = ${institutionId} 
-          and user_id = ${session.userId}
+        where id = $institutionId
+          and user_id = $userId
         returning archived_at
     """.query[Time].unique
 
-  def unarchive(institutionId: Long)(using session: Session): ConnectionIO[Long] =
+  def unarchive(institutionId: Long, userId: Long): ConnectionIO[Long] =
     sql"""
         update institutions set archived_at = null 
-        where id = ${institutionId} 
-        and user_id = ${session.userId}
+        where id = $institutionId 
+        and user_id = $userId
         returning id 
     """.query[Long].unique
 
-  def rename(institutionId: Long, newName: String)(using session: Session): ConnectionIO[Long] =
+  def rename(institutionId: Long, userId: Long)(newName: String): ConnectionIO[Long] =
     sql"""
-        update institutions set name = ${newName} 
-        where id = ${institutionId} 
-          and user_id = ${session.userId}
+        update institutions set name = $newName
+        where id = $institutionId 
+          and user_id = $userId
         returning id
     """.query[Long].unique

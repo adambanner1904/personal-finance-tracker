@@ -5,7 +5,6 @@ import models.errors.AddInstitutionError
 import persistence.InstitutionRepository
 
 import javax.inject.{Inject, Singleton}
-import models.Session
 import implicits.Repository.*
 import models.db.Transactor
 
@@ -14,16 +13,12 @@ class InstitutionService @Inject (implicit
   val xa: Transactor,
   institutionRepo: InstitutionRepository,
 ):
-  def listInstitutions()(using
-    session: Session,
-  ): List[String] =
-    institutionRepo.list().execute.map(_.name)
+  def listInstitutions(userId: Long): List[String] =
+    institutionRepo.list(userId).execute.map(_.name)
     
-  def addInstitution(name: String)(using
-    session: Session,
-  ): Either[AddInstitutionError, Unit] =
-    institutionRepo.findByName(name).execute match
+  def addInstitution(name: String, userId: Long): Either[AddInstitutionError, Unit] =
+    institutionRepo.findByName(name, userId).execute match
       case Some(_) => Left(AddInstitutionError.InstitutionAlreadyExists(name))
       case None    =>
-        institutionRepo.insert(name).execute
+        institutionRepo.insert(name, userId).execute
         Right(())

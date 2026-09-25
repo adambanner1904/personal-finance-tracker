@@ -7,7 +7,6 @@ import action.*
 
 import javax.inject.{Inject, Singleton}
 import services.InstitutionService
-import action.given
 
 
 @Singleton
@@ -18,6 +17,6 @@ class ListInstitutionsController @Inject() (
 ) extends MessagesAbstractController(mcc):
     
   def get() = authenticatedAction { implicit request: UserRequest[?] =>
-    val institutions = institutionService.listInstitutions()
+    val institutions = institutionService.listInstitutions(request.userId)
     Ok(views.html.institutions.list(institutions))
   }

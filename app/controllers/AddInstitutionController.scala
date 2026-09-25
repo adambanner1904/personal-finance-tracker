@@ -4,7 +4,6 @@ import play.api.*
 import play.api.mvc.*
 
 import action.*
-import action.given
 
 import forms.institutions.AddInstitutionForm.createInstituteForm
 import services.InstitutionService
@@ -29,7 +28,7 @@ class AddInstitutionController @Inject() (
         formWithErrors =>
           BadRequest(views.html.institutions.create(formWithErrors)),
         institutionData =>
-          institutionService.addInstitution(institutionData.name) match
+          institutionService.addInstitution(institutionData.name, request.userId) match
             case Left(error) =>
               Redirect(routes.AddInstitutionController.get())
                 .flashing("error" -> error.message)

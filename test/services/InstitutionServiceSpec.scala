@@ -4,7 +4,6 @@ import basespecs.ServiceSpec
 import models.errors.AddInstitutionError
 
 import mocks.MockInstitutionRepository
-import models.Session
 import data.FakeInstitutions
 
 class InstitutionServiceSpec 
@@ -14,28 +13,28 @@ class InstitutionServiceSpec
   
   lazy val institutionService = new InstitutionService(using xa, mockInstitutionRepo)
 
-  given Session = validSession
+  val userId = 1L
 
   "InstitutionService" should:
     "return an error if the institution already exists" in {
-      mockFindByName(halifax.name)(Some(halifax))
+      mockFindByName(halifax.name, userId)(Some(halifax))
       
-      val result = institutionService.addInstitution(halifax.name)
+      val result = institutionService.addInstitution(halifax.name, userId)
       result shouldBe Left(AddInstitutionError.InstitutionAlreadyExists(halifax.name))
     }
 
     "successfully add a new institution if it does not exist" in {
       val name = "New Institution"
-      mockFindByName(name)(None)
-      mockInsert(name)
+      mockFindByName(name, userId)(None)
+      mockInsert(name, userId)
       
-      val result = institutionService.addInstitution(name)
+      val result = institutionService.addInstitution(name, userId)
       result shouldBe Right(())
     }
 
     "return a list of names of all institutions" in {
-      mockList(halifax, starling)
+      mockList(userId, halifax, starling)
 
-      val result = institutionService.listInstitutions()
+      val result = institutionService.listInstitutions(userId)
       result shouldBe List(halifax.name, starling.name)
     }

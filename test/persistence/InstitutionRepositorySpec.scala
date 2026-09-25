@@ -1,6 +1,5 @@
 package persistence
 
-import models.Session
 import implicits.Repository.*
 import models.db.Transactor
 import models.{Institution, Time}
@@ -16,9 +15,9 @@ class InstitutionRepositorySpec extends DbSpec:
     "return the institution if it exists" in {
       val session = createUserSession()
 
-      val institutionId = insertInstitution("Test Institution")(using session)
+      val institutionId = insertInstitution("Test Institution", session.userId)
       val result        = institutionRepo
-        .findById(institutionId)(using session)
+        .findById(institutionId, session.userId)
         .execute
         .value
       result shouldBe a[Institution]
@@ -29,7 +28,7 @@ class InstitutionRepositorySpec extends DbSpec:
       val session = createUserSession()
 
       val result =
-        institutionRepo.findById(999)(using session).execute
+        institutionRepo.findById(999, session.userId).execute
       result shouldBe None
     }
   }
@@ -39,9 +38,9 @@ class InstitutionRepositorySpec extends DbSpec:
       val session = createUserSession()
 
       val program = for
-        _            <- institutionRepo.insert("Institution 1")(using session)
-        _            <- institutionRepo.insert("Institution 2")(using session)
-        institutions <- institutionRepo.list()(using session)
+        _            <- institutionRepo.insert("Institution 1", session.userId)
+        _            <- institutionRepo.insert("Institution 2", session.userId)
+        institutions <- institutionRepo.list(session.userId)
       yield institutions
 
       val result = program.execute
@@ -53,10 +52,10 @@ class InstitutionRepositorySpec extends DbSpec:
       val session = createUserSession()
 
       val program = for
-        _            <- institutionRepo.insert("Z Institution")(using session)
-        _            <- institutionRepo.insert("A Institution")(using session)
-        _            <- institutionRepo.insert("M Institution")(using session)
-        institutions <- institutionRepo.list()(using session)
+        _            <- institutionRepo.insert("Z Institution", session.userId)
+        _            <- institutionRepo.insert("A Institution", session.userId)
+        _            <- institutionRepo.insert("M Institution", session.userId)
+        institutions <- institutionRepo.list(session.userId)
       yield institutions
 
       val result = program.execute
@@ -68,13 +67,13 @@ class InstitutionRepositorySpec extends DbSpec:
     "set the archived_at field" in {
       val session = createUserSession()
 
-      val institutionId = insertInstitution("To Archive")(using session)
+      val institutionId = insertInstitution("To Archive", session.userId)
       val archivedAt     = institutionRepo
-        .archive(institutionId)(using session)
+        .archive(institutionId, session.userId)
         .execute
 
       val result = institutionRepo
-        .findById(institutionId)(using session)
+        .findById(institutionId, session.userId)
         .execute
         .value
       result.archivedAt shouldBe Some(archivedAt)
@@ -85,25 +84,25 @@ class InstitutionRepositorySpec extends DbSpec:
     "set the archived_at field to null/None" in {
       val session = createUserSession()
 
-      val institutionId = insertInstitution("To Dearchive")(using session)
+      val institutionId = insertInstitution("To Dearchive", session.userId)
       val archivedAt    = institutionRepo
-        .archive(institutionId)(using session)
+        .archive(institutionId, session.userId)
         .execute
 
       val archived = institutionRepo
-        .findById(institutionId)(using session)
+        .findById(institutionId, session.userId)
         .execute
         .value
       archived.archivedAt shouldBe Some(archivedAt)
 
       val unarchivedId = institutionRepo
-        .unarchive(institutionId)(using session)
+        .unarchive(institutionId, session.userId)
         .execute
 
       unarchivedId shouldBe institutionId
 
       val result = institutionRepo
-        .findById(unarchivedId)(using session)
+        .findById(unarchivedId, session.userId)
         .execute
         .value
       result.archivedAt shouldBe None
@@ -114,15 +113,15 @@ class InstitutionRepositorySpec extends DbSpec:
     "update the name field" in {
       val session = createUserSession()
 
-      val institutionId = insertInstitution("Old Name")(using session)
+      val institutionId = insertInstitution("Old Name", session.userId)
       val renamedId      = institutionRepo
-        .rename(institutionId, "New Name")(using session)
+        .rename(institutionId, session.userId)("New Name")
         .execute
 
       renamedId shouldBe institutionId
 
       val result = institutionRepo
-        .findById(renamedId)(using session)
+        .findById(renamedId, session.userId)
         .execute
         .value
       result.name shouldBe "New Name"
@@ -132,5 +131,6 @@ class InstitutionRepositorySpec extends DbSpec:
 object InstitutionRepositorySpec:
   private def insertInstitution(
     name: String,
-  )(using session: Session, institutionRepo: InstitutionRepository, xa: Transactor): Long =
-    institutionRepo.insert(name)(using session).execute
+    userId: Long = 1L
+  )(using institutionRepo: InstitutionRepository, xa: Transactor): Long =
+    institutionRepo.insert(name, userId).execute

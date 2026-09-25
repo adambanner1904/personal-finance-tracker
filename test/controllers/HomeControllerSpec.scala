@@ -17,9 +17,9 @@ import org.mockito.Mockito.when
 
 class HomeControllerSpec extends ControllerSpec with MockAuthService:
 
-  val mockAuthenticatedAction = new AuthenticatedAction(mockAuthService, messagesApi, bp)
+  val authenticatedAction = new AuthenticatedAction(mockAuthService, messagesApi, bp)
 
-  val controller = new HomeController(mcc, mockAuthenticatedAction)
+  val controller = new HomeController(mcc, authenticatedAction)
 
   val indexRequest = FakeRequest(GET, "/")
   val index        = controller.index().apply(indexRequest)
@@ -33,6 +33,7 @@ class HomeControllerSpec extends ControllerSpec with MockAuthService:
   "HomeController GET /home" should:
     def getHomePage(sessionId: Option[String]) =
       controller.home().apply(requestWithSession(GET, "/home", sessionId))
+      
     "fail and redirect to log in page if user has no session-id in Cookies" in:
       val homePage = getHomePage(None)
       status(homePage) shouldBe SEE_OTHER
