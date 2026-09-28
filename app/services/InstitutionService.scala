@@ -26,3 +26,7 @@ class InstitutionService @Inject (implicit
       case None    =>
         institutionRepo.insert(name, userId).execute
         Right(())
+
+  def renameInstitution(institutionId: Long, userId: Long)(newName: String): Unit = 
+    institutionRepo.rename(institutionId, userId)(newName).execute
+    

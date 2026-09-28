@@ -38,3 +38,11 @@ class InstitutionServiceSpec
       val result = institutionService.listInstitutions(userId)
       result shouldBe List(halifax, starling)
     }
+
+    "rename an existing institution" in {
+      val newName = "Renamed Institution"
+      mockRename(halifax.id, userId)(newName)
+
+      val result = institutionService.renameInstitution(halifax.id, userId)(newName)
+      result shouldBe ()
+    }

@@ -11,7 +11,7 @@
     <h1>Rename Institution</h1>
   </div>
 
-  @form(action = routes.RenameInstitutionController.get(institution.id), Symbol("class") -> "form-section") {
+  @form(action = routes.RenameInstitutionController.post(institution.id), Symbol("class") -> "form-section") {
     @CSRF.formField
     @inputText(institutionForm("name"), Symbol("class") -> "form-field", Symbol("maxlength") -> "300")
     <input type="submit" value="Submit">

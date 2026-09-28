@@ -18,3 +18,6 @@ trait MockInstitutionRepository extends MockitoSugar:
 
   def mockList(userId: Long, institutions: Institution*): Unit =
     when(mockInstitutionRepo.list(userId)).thenReturn(pure(institutions.toList))
+
+  def mockRename(institutionId: Long, userId: Long)(newName: String): Unit =
+    when(mockInstitutionRepo.rename(institutionId, userId)(newName)).thenReturn(pure(()))

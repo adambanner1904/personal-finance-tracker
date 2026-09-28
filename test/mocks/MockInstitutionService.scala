@@ -1,7 +1,7 @@
 package mocks
 
 import org.scalatestplus.mockito.MockitoSugar
-import org.mockito.Mockito.when
+import org.mockito.Mockito.*
 import services.InstitutionService
 import models.errors.AddInstitutionError
 import models.Institution
@@ -18,3 +18,6 @@ trait MockInstitutionService extends MockitoSugar:
 
   def mockFindById(id: Long, userId: Long)(response: Option[Institution]): Unit =
     when(mockInstitutionService.findById(id, userId)).thenReturn(response)
+
+  def mockRenameInstitution(institutionId: Long, userId: Long)(newName: String): Unit =
+    doNothing().when(mockInstitutionService).renameInstitution(institutionId, userId)(newName)
