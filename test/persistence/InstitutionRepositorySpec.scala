@@ -68,7 +68,7 @@ class InstitutionRepositorySpec extends DbSpec:
       val session = createUserSession()
 
       val institutionId = insertInstitution("To Archive", session.userId)
-      val archivedAt     = institutionRepo
+      val archivedName     = institutionRepo
         .archive(institutionId, session.userId)
         .execute
 
@@ -76,7 +76,9 @@ class InstitutionRepositorySpec extends DbSpec:
         .findById(institutionId, session.userId)
         .execute
         .value
-      result.archivedAt shouldBe Some(archivedAt)
+        
+      result.archivedAt shouldBe defined
+      result.name shouldBe archivedName
     }
   }
 
@@ -85,7 +87,7 @@ class InstitutionRepositorySpec extends DbSpec:
       val session = createUserSession()
 
       val institutionId = insertInstitution("To Dearchive", session.userId)
-      val archivedAt    = institutionRepo
+      val archivedName    = institutionRepo
         .archive(institutionId, session.userId)
         .execute
 
@@ -93,7 +95,9 @@ class InstitutionRepositorySpec extends DbSpec:
         .findById(institutionId, session.userId)
         .execute
         .value
-      archived.archivedAt shouldBe Some(archivedAt)
+        
+      archived.archivedAt shouldBe defined
+      
 
       val unarchivedId = institutionRepo
         .unarchive(institutionId, session.userId)
@@ -105,6 +109,7 @@ class InstitutionRepositorySpec extends DbSpec:
         .findById(unarchivedId, session.userId)
         .execute
         .value
+      
       result.archivedAt shouldBe None
     }
   }

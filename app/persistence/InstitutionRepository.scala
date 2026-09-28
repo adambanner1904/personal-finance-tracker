@@ -15,6 +15,7 @@ class InstitutionRepository @Inject():
         select * 
         from institutions 
         where user_id = $userId
+        and archived_at is null
         order by name
     """.query[Institution].to[List]
 
@@ -41,13 +42,13 @@ class InstitutionRepository @Inject():
         returning id
     """.query[Long].unique
 
-  def archive(institutionId: Long, userId: Long): ConnectionIO[Time] =
+  def archive(institutionId: Long, userId: Long): ConnectionIO[String] =
     sql"""
         update institutions set archived_at = ${Time.now} 
         where id = $institutionId
           and user_id = $userId
-        returning archived_at
-    """.query[Time].unique
+        returning name
+    """.query[String].unique
 
   def unarchive(institutionId: Long, userId: Long): ConnectionIO[Long] =
     sql"""

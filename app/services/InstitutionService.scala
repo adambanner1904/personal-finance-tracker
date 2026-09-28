@@ -29,4 +29,7 @@ class InstitutionService @Inject (implicit
 
   def renameInstitution(institutionId: Long, userId: Long)(newName: String): Unit = 
     institutionRepo.rename(institutionId, userId)(newName).execute
+
+  def archiveInstitution(institutionId: Long, userId: Long): String =
+    institutionRepo.archive(institutionId, userId).execute
     

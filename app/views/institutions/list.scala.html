@@ -29,10 +29,8 @@
               <td>@{institution.name}</td>
               <td>
                 <div class="actions">
-                  @* TODO: replace href="#" with routes.RenameInstitutionController.get(institution.id) once that action exists *@
                   <a class="button button-secondary" href="@routes.RenameInstitutionController.get(institution.id)">Rename</a>
-                  @* TODO: replace href="#" with routes.ArchiveInstitutionController.post(institution.id) once that action exists *@
-                  <a class="button button-secondary" href="#">Archive</a>
+                  <a class="button button-secondary" href="@routes.ArchiveInstitutionController.archive(institution.id)">Archive</a>
                 </div>
               </td>
             </tr>

@@ -21,3 +21,6 @@ trait MockInstitutionService extends MockitoSugar:
 
   def mockRenameInstitution(institutionId: Long, userId: Long)(newName: String): Unit =
     doNothing().when(mockInstitutionService).renameInstitution(institutionId, userId)(newName)
+
+  def mockArchiveInstitution(institutionId: Long, userId: Long)(response: String): Unit = 
+    when(mockInstitutionService.archiveInstitution(institutionId, userId)).thenReturn(response)
