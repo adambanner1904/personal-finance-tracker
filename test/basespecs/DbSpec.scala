@@ -4,7 +4,7 @@ import implicits.Repository.*
 import models.db.Transactor
 import models.Session
 
-import data.FakeSessions
+import testdata.FakeSessions
 import org.scalatest.BeforeAndAfterEach
 import org.typelevel.doobie.implicits.toSqlInterpolator // sql"..."
 

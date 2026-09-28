@@ -6,8 +6,12 @@ import play.api.test.Helpers.*
 
 import basespecs.ControllerSpec
 import mocks.MockInstitutionService
+import testdata.FakeInstitutions
 
-class ListInstitutionsControllerSpec extends ControllerSpec with MockInstitutionService:
+class ListInstitutionsControllerSpec 
+  extends ControllerSpec 
+  with MockInstitutionService
+  with FakeInstitutions:
 
   val controller = new ListInstitutionsController(
     fakeUserAction,
@@ -17,14 +21,14 @@ class ListInstitutionsControllerSpec extends ControllerSpec with MockInstitution
   
   "ListInstitutionsController" should {
     "return a list of institutions" in {
-      mockListInstitutions(validUserId, "Bank A", "Bank B")
+      mockListInstitutions(validUserId, halifax, starling)
 
       // Call the controller action
       val result = controller.get().apply(userRequest)
 
       // Verify the result
       status(result) shouldBe OK
-      contentAsString(result) should include("Bank A")
-      contentAsString(result) should include("Bank B")
+      contentAsString(result) should include(halifax.name)
+      contentAsString(result) should include(starling.name)
     }
   }

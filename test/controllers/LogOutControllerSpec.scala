@@ -3,7 +3,7 @@ package controllers
 import play.api.test.Helpers.*
 
 import basespecs.ControllerSpec
-import data.FakeSessions
+import testdata.FakeSessions
 import helpers.AuthHelpers.requestWithSession
 import mocks.{FakeAuthenticatedAction, MockAuthService}
 

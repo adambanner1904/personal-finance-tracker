@@ -4,7 +4,7 @@ import basespecs.ServiceSpec
 import models.errors.AddInstitutionError
 
 import mocks.MockInstitutionRepository
-import data.FakeInstitutions
+import testdata.FakeInstitutions
 
 class InstitutionServiceSpec 
   extends ServiceSpec 
@@ -36,5 +36,5 @@ class InstitutionServiceSpec
       mockList(userId, halifax, starling)
 
       val result = institutionService.listInstitutions(userId)
-      result shouldBe List(halifax.name, starling.name)
+      result shouldBe List(halifax, starling)
     }
