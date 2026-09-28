@@ -15,3 +15,6 @@ trait MockInstitutionService extends MockitoSugar:
 
   def mockAddInstitution(userId: Long, name: String)(response: Either[AddInstitutionError, Unit]): Unit =
     when(mockInstitutionService.addInstitution(name, userId)).thenReturn(response)
+
+  def mockFindById(id: Long, userId: Long)(response: Option[Institution]): Unit =
+    when(mockInstitutionService.findById(id, userId)).thenReturn(response)

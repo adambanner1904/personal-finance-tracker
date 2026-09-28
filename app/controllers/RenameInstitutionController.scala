@@ -13,8 +13,8 @@ import services.InstitutionService
 @Singleton
 class RenameInstitutionController @Inject() (
   authenticatedAction: UserAction,
-  val mcc: MessagesControllerComponents, 
-  institutionService: InstitutionService
+  institutionService: InstitutionService,
+  val mcc: MessagesControllerComponents
 ) extends MessagesAbstractController(mcc):
 
   def get(institutionId: Long) = authenticatedAction { implicit request: UserRequest[?] =>
